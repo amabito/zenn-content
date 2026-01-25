@@ -3,7 +3,7 @@ title: "【2026年版】3DGSラスタライザ比較：商用OKで最速はど�
 emoji: "🔍"
 type: "tech"
 topics: ["3dgs", "cuda", "機械学習", "オープンソース", "ライセンス"]
-published: false
+published: true
 ---
 
 # 結論から言う

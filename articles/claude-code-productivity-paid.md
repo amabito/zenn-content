@@ -3,7 +3,7 @@ title: "【有料】Claude Code完全活用ガイド【プロンプト集+自動
 emoji: "🚀"
 type: "tech"
 topics: ["Claude", "AI", "生産性", "自動化", "プログラミング"]
-published: false
+published: true
 price: 980
 ---
 
