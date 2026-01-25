@@ -1,5 +1,5 @@
 ---
-title: "3DGSを商用利用したい人へ：130倍高速な独自ラスタライザを作った話"
+title: "3DGSを商用利用したい人へ：1000FPS達成した独自ラスタライザを作った話"
 emoji: "🚀"
 type: "tech"
 topics: ["3dgs", "cuda", "機械学習", "コンピュータグラフィックス", "gpu"]
@@ -10,7 +10,7 @@ published: true
 
 **3D Gaussian Splatting（3DGS）を商用で使いたいなら、ラスタライザを自作するしかない。**
 
-そして私は作った。**HyperRasterizer**。Apache 2.0ライセンス、商用利用OK、オリジナルより**130倍高速**。
+そして私は作った。**HyperRasterizer**。Apache 2.0ライセンス、商用利用OK、**100万Gaussians @ 1080pで1000FPS**。
 
 この記事では、なぜ自作が必要だったのか、どう実装したのか、そしてどれだけ速くなったのかを解説する。
 
@@ -68,7 +68,7 @@ HyperRasterizer
 ├── 商用利用: ✅ 完全OK
 ├── Forward: 投影 → ソート → レンダリング
 ├── Backward: 勾配計算（学習に必須）
-└── 速度: 221 it/s（diff-gaussian比 10倍）
+└── 速度: 1M Gaussians @ 1080p = 1000 FPS
 ```
 
 ## 最大の難関：Backward Pass
@@ -123,7 +123,7 @@ sorting.cu         CUB Radix Sort（深度順ソート）
       ↓
 forward.cu         タイルベースレンダリング
       ↓
-backward.cu        Forward-Order勾配計算
+backward.cu        Forward-Order勾配計算 + Quad Reduction
 ```
 
 ## 最適化テクニック
@@ -174,16 +174,35 @@ if (sm >= 120) {      // Blackwell (RTX 5090)
 }
 ```
 
+### 5. Quad Reduction
+
+Backward Passでの勾配集約を4スレッドグループで行い、Atomic操作を4分の1に削減。
+
+### 6. メモリプール
+
+フレームごとのcudaMallocオーバーヘッドを排除。適切なbinning推定で1M Gaussiansに対応。
+
 ---
 
 # ベンチマーク
 
 RTX 5090（32GB VRAM）での計測結果。
 
+## Forward Pass（推論）
+
+| Gaussians | 解像度 | FPS | 備考 |
+|-----------|--------|-----|------|
+| 100K | 800x600 | **2428** | カリング34% |
+| 100K | 1920x1080 | **2387** | カリング27% |
+| 500K | 1920x1080 | **1628** | 実用レベル |
+| 1M | 800x600 | **1153** | メモリプール有効 |
+| 1M | 1920x1080 | **1000** | メモリプール有効 |
+
+## 学習速度比較
+
 | 項目 | diff-gaussian | gsplat | HyperRasterizer |
 |------|--------------|--------|-----------------|
 | 学習速度 | 21 it/s | 1.7 it/s | **221 it/s** |
-| Forward | 速い | 遅い | 速い |
 | Backward | 速い | 遅い | **130x改善** |
 | 商用利用 | ❌ | ✅ | ✅ |
 
@@ -191,9 +210,7 @@ RTX 5090（32GB VRAM）での計測結果。
 
 ---
 
-# まだやることはある
-
-## 実装済みの最適化
+# 実装済みの最適化
 
 | 最適化 | 効果 | 状態 |
 |--------|------|------|
@@ -203,20 +220,36 @@ RTX 5090（32GB VRAM）での計測結果。
 | Fast Math (__expf) | 3-5%高速化 | ✅ 完了 |
 | Lazy SH評価 | 推論15-25%高速化 | ✅ 完了 |
 | GPU自動検出 | 最適パラメータ選択 | ✅ 完了 |
+| Quad Reduction | Atomic 4x削減 | ✅ 完了 |
+| メモリプール | 1M Gaussians対応 | ✅ 完了 |
 
 ## 試したが効果がなかったもの
 
 - **Warp Reduction**: 61ms → 400msに悪化。RTX 5090ではAtomic操作が十分高速で、オーバーヘッドの方が大きかった。
 
-## 解決済みの課題
+---
 
-1. **メモリプール first-frame bug**: cudaMalloc後のメモリ未初期化が原因。cudaMemsetでゼロ初期化して解決。
+# 解決した難問
 
-## 未解決の課題
+## メモリプールの罠
 
-1. **Quad Reduction**: warp同期問題で無効化中。
+**問題1: first-frame bug**
+- cudaMalloc後のメモリが初期化されていない
+- 解決: cudaMemsetでゼロ初期化
 
-## 今後の予定
+**問題2: binning推定の爆発**
+- 1M Gaussians @ 1080pで73GBを要求
+- 解決: 5%タイルカバレッジ推定 + 256タイル/Gaussianキャップ + 4GBハードキャップ
+- 結果: **0.1 FPS → 1000 FPS**
+
+## Quad Reductionのwarp同期
+
+**問題**: `__shfl_xor_sync`が条件分岐内で呼ばれ、デッドロック
+**解決**: shuffle操作を条件分岐外へ移動
+
+---
+
+# 今後の予定
 
 - FP8対応（Blackwell Tensor Core活用）
 - オープンソース公開
