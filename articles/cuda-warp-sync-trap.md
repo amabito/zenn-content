@@ -230,6 +230,12 @@ NVIDIAのドキュメントにはちゃんと書いてある:
 
 ---
 
+完全な実装コード、ベンチマーク、他のwarp同期の罠は有料記事で解説しています。
+
+https://zenn.dev/amabito/articles/cuda-warp-sync-trap-paid
+
+---
+
 # 関連記事
 
 ## CUDA開発シリーズ
