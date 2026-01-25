@@ -1,0 +1,41 @@
+name: Scheduled Article Publishing
+
+on:
+  schedule:
+    # 毎日朝7時（日本時間）に実行 = UTC 22:00
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+    inputs:
+      count:
+        description: '公開する記事数'
+        required: false
+        default: '5'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Publish articles
+        run: |
+          python scripts/publish_articles.py ${{ github.event.inputs.count || '5' }}
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add articles/
+          if git diff --staged --quiet; then
+            echo "No articles to publish"
+          else
+            git commit -m "chore: 記事を自動公開 (scheduled)"
+            git push
+          fi

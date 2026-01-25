@@ -3,7 +3,7 @@ title: "ドローン測量を始めて5年：失敗から学んだ実践ノウ�
 emoji: "🚁"
 type: "tech"
 topics: ["ドローン", "測量", "建設DX", "iconstruction", "点群"]
-published: true
+published: false
 ---
 
 # 結論から言う

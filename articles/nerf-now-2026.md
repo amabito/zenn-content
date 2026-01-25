@@ -3,7 +3,7 @@ title: "NeRFは終わったのか？2026年、その存在意義を問う"
 emoji: "🔮"
 type: "tech"
 topics: ["nerf", "3dgs", "機械学習", "コンピュータグラフィックス", "nvidia"]
-published: true
+published: false
 ---
 
 # 結論から言う

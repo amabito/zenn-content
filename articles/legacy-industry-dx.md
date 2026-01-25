@@ -3,7 +3,7 @@ title: "レガシー業界でDXを成功させる5つの原則【建設業10年�
 emoji: "🏗️"
 type: "idea"
 topics: ["DX", "経営", "建設業", "業務改善", "デジタル化"]
-published: true
+published: false
 ---
 
 # 結論から言う

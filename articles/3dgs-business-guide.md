@@ -3,7 +3,7 @@ title: "3DGSとは？5分でわかるビジネス活用ガイド【経営者向�
 emoji: "💼"
 type: "tech"
 topics: ["3dgs", "ビジネス", "DX", "3D", "スタートアップ"]
-published: true
+published: false
 ---
 
 # 結論から言う

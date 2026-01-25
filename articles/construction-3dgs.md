@@ -3,7 +3,7 @@ title: "ドローン15分で現場が3D化：建設×3DGSの始め方【実践�
 emoji: "🏗️"
 type: "tech"
 topics: ["3dgs", "建設", "デジタルツイン", "ドローン", "測量"]
-published: true
+published: false
 ---
 
 # 結論から言う

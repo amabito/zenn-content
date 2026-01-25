@@ -3,7 +3,7 @@ title: "【有料】レガシー業界DX実践マニュアル【失敗パター�
 emoji: "📘"
 type: "idea"
 topics: ["DX", "経営", "業務改善", "建設業", "コンサルティング"]
-published: true
+published: false
 price: 1480
 ---
 

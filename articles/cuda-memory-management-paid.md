@@ -3,7 +3,7 @@ title: "【有料】CUDAメモリプールで15%高速化した実装【コピ�
 emoji: "🔥"
 type: "tech"
 topics: ["cuda", "gpu", "メモリ管理", "最適化"]
-published: true
+published: false
 price: 1480
 ---
 

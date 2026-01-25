@@ -3,7 +3,7 @@ title: "建設DXが失敗する5つの理由と、成功する会社の共通点
 emoji: "🚧"
 type: "tech"
 topics: ["建設DX", "DX", "建設業", "経営", "失敗学"]
-published: true
+published: false
 ---
 
 # 結論から言う

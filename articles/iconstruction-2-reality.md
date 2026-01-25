@@ -3,7 +3,7 @@ title: "i-Construction 2.0は現場で機能しているか？【8年見てき�
 emoji: "🏗️"
 type: "tech"
 topics: ["iconstruction", "建設DX", "建設業", "国土交通省", "生産性向上"]
-published: true
+published: false
 ---
 
 # 結論から言う
