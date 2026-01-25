@@ -190,6 +190,20 @@ result = my_ext.my_function(input)
 
 ---
 
+# 関連記事
+
+## CUDA開発シリーズ
+- [RTX 5090 CUDA最適化](https://zenn.dev/amabito/articles/rtx5090-cuda-optimization) - Blackwell世代の最適化
+- [CUDAメモリ管理の罠](https://zenn.dev/amabito/articles/cuda-memory-management) - メモリプール実装
+- **この記事** → PyTorch CUDA拡張の罠
+
+## 3DGSシリーズ
+- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 1000FPS達成の独自ラスタライザ
+- [3DGS商用化ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題の整理
+- [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 実用事例
+
+---
+
 詳細な実装とPyTorchバージョン互換性の解決方法は有料記事で解説しています。
 
 https://zenn.dev/amabito/articles/pytorch-cuda-extension-paid

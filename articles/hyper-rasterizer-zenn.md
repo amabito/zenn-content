@@ -270,6 +270,21 @@ HyperRasterizerはその問題を解決する。Apache 2.0で、誰でも自由�
 
 ---
 
+# 関連記事
+
+## 3DGSシリーズ
+- **この記事** → HyperRasterizer完全解説
+- [【有料】実装詳細ガイド](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid) - Forward/Backward実装コード
+- [3DGS商用化ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題の整理
+- [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 実用事例
+
+## CUDA開発シリーズ
+- [RTX 5090 CUDA最適化](https://zenn.dev/amabito/articles/rtx5090-cuda-optimization) - Blackwell世代の最適化
+- [CUDAメモリ管理の罠](https://zenn.dev/amabito/articles/cuda-memory-management) - メモリプール実装
+- [PyTorch CUDA拡張](https://zenn.dev/amabito/articles/pytorch-cuda-extension) - Windowsビルドの罠
+
+---
+
 # 参考
 
 - [3D Gaussian Splatting (原論文)](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/)

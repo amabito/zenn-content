@@ -182,6 +182,20 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
+# 関連記事
+
+## 3DGSシリーズ
+- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 1000FPS達成の独自ラスタライザ
+- **この記事** → 商用化ガイド（ライセンス問題）
+- [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 実用事例
+
+## CUDA開発シリーズ
+- [RTX 5090 CUDA最適化](https://zenn.dev/amabito/articles/rtx5090-cuda-optimization) - Blackwell世代の最適化
+- [CUDAメモリ管理の罠](https://zenn.dev/amabito/articles/cuda-memory-management) - メモリプール実装
+- [PyTorch CUDA拡張](https://zenn.dev/amabito/articles/pytorch-cuda-extension) - Windowsビルドの罠
+
+---
+
 詳細な自作ガイド（Forward/Backward実装）は有料記事で解説しています。
 
 https://zenn.dev/amabito/articles/3dgs-commercial-guide-paid
