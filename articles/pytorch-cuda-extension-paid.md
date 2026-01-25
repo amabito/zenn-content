@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["pytorch", "cuda", "python", "cpp", "windows"]
 published: true
-price: 1480
+price: 980
 ---
 
 # この記事で得られるもの

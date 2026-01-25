@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["3dgs", "cuda", "ラスタライザ", "商用利用"]
 published: true
-price: 2980
+price: 1980
 ---
 
 # この記事で得られるもの

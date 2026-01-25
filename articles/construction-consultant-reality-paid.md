@@ -4,7 +4,7 @@ emoji: "💼"
 type: "tech"
 topics: ["建設DX", "3dgs", "iconstruction", "経営", "コンサルティング"]
 published: true
-price: 1980
+price: 1480
 ---
 
 # この記事で得られるもの

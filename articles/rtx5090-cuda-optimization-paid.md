@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["cuda", "gpu", "rtx5090", "blackwell", "最適化"]
 published: true
-price: 1480
+price: 980
 ---
 
 # この記事で得られるもの

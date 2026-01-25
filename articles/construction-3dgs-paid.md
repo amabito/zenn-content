@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["3dgs", "建設", "デジタルツイン", "ドローン", "測量"]
 published: true
-price: 2480
+price: 1480
 ---
 
 # この記事で得られるもの

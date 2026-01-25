@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["cuda", "3dgs", "gpu", "機械学習", "グラフィックス"]
 published: true
-price: 1980
+price: 980
 ---
 
 # この記事で得られるもの
