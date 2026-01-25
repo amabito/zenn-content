@@ -1,16 +1,29 @@
 ---
-title: "3DGSを商用利用したい人へ：1000FPS達成した独自ラスタライザを作った話"
+title: "3DGSを商用利用したい人へ：DGRを超える3713FPSの独自ラスタライザを作った話"
 emoji: "🚀"
 type: "tech"
-topics: ["3dgs", "cuda", "機械学習", "コンピュータグラフィックス", "gpu"]
+topics: ["3dgs", "cuda", "gpu", "computervision", "機械学習"]
 published: true
+---
+
+# TL;DR
+
+| 項目 | 結果 |
+|------|------|
+| 速度 | **3,713 FPS** (N=100K) |
+| DGR比 | **1.29x高速** |
+| ライセンス | Apache 2.0（商用無料） |
+| GPU | RTX 5090 (Blackwell) |
+
+**diff-gaussian-rasterization (DGR) を超えました。**
+
 ---
 
 # 結論から言う
 
 **3D Gaussian Splatting（3DGS）を商用で使いたいなら、ラスタライザを自作するしかない。**
 
-そして私は作った。**HyperRasterizer**。Apache 2.0ライセンス、商用利用OK、**100万Gaussians @ 1080pで1000FPS**。
+そして私は作った。**HyperRasterizer**。Apache 2.0ライセンス、商用利用OK、**DGRを1.29x上回る3713FPS**。
 
 この記事では、なぜ自作が必要だったのか、どう実装したのか、そしてどれだけ速くなったのかを解説する。
 
@@ -108,6 +121,41 @@ T_before = T_before / (1-αN-1)   ← また除算
 
 ---
 
+# どうやってDGRを超えたか
+
+## ボトルネック分析
+
+プロファイリングの結果、**ソート処理が全体の60%**を占めていることが判明。
+
+```
+preprocess:  10%
+count:       15%
+sort:        60%  ← ここがボトルネック
+forward:     12%
+copy:         8%
+```
+
+## Hash-based Forward Rendering
+
+グローバルRadix Sortを**空間ハッシュテーブル + タイル内Bitonic Sort**に置換。
+
+- グローバルソート: O(n log n) 全Gaussian
+- Hash-based: O(k log k) タイル内のみ (k << n)
+
+## 4つのレンダリングモード
+
+| モード | 品質 | 速度 | 用途 |
+|--------|------|------|------|
+| SORTED | 同等 | 8.1x | トレーニング |
+| WSR | -1~2dB | 7.5x | プレビュー |
+| HYBRID | -0.5dB | 4.5x | バランス |
+
+詳細な実装解説は👇の有料記事で公開しています。
+
+https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid
+
+---
+
 # 技術詳細
 
 ## アーキテクチャ
@@ -116,6 +164,8 @@ T_before = T_before / (1-αN-1)   ← また除算
 preprocessing.cu   3D→2D投影、カリング、球面調和関数評価
       ↓
 sorting.cu         CUB Radix Sort（深度順ソート）
+      ↓
+hash_table.cu      空間ハッシュテーブル（Hash-basedモード）
       ↓
 forward.cu         タイルベースレンダリング
       ↓
@@ -175,26 +225,45 @@ Backward Passでの勾配集約を4スレッドグループで行い、Atomic操
 
 RTX 5090（32GB VRAM）での計測結果。
 
+## DGR超え達成 (2026/01/25 更新)
+
+### Full Pipeline比較 (N=100K, 800x600, sh=3)
+
+| モード | 時間 | FPS | DGR比 |
+|--------|------|-----|-------|
+| Standard | 2.19 ms | 457 | 0.16x |
+| **Hash-SORTED** | **0.27 ms** | **3,713** | **1.29x** |
+| Hash-WSR | 0.29 ms | 3,413 | 1.19x |
+| Hash-HYBRID | 0.48 ms | 2,072 | 0.72x |
+| DGR (参考) | 0.35 ms | 2,870 | 1.0x |
+
+### 高速化の内訳
+
+1. **Hash-based Forward**: ソートボトルネック(60%)を削減
+2. **32-bit Compact Keys**: メモリ帯域50%削減
+3. **Memory Pool**: cudaMallocオーバーヘッド排除(+15%)
+4. **Early Termination**: 収束ピクセルの計算スキップ
+
 ## Forward Pass（推論）
 
 | Gaussians | 解像度 | FPS | 備考 |
 |-----------|--------|-----|------|
-| 100K | 800x600 | **2428** | カリング34% |
-| 100K | 1920x1080 | **2387** | カリング27% |
-| 500K | 1920x1080 | **1628** | 実用レベル |
-| 1M | 800x600 | **1153** | メモリプール有効 |
-| 1M | 1920x1080 | **1000** | メモリプール有効 |
+| 100K | 800x600 | **3,713** | Hash-SORTED |
+| 100K | 1920x1080 | **2,800+** | Hash-SORTED |
+| 500K | 1920x1080 | **1,800+** | 実用レベル |
+| 1M | 800x600 | **1,153** | メモリプール有効 |
+| 1M | 1920x1080 | **1,000** | メモリプール有効 |
 
 ## 学習速度比較
 
 | 項目 | diff-gaussian | gsplat | HyperRasterizer |
 |------|--------------|--------|-----------------|
-| 学習速度 | 21 it/s | 1.7 it/s | **241 it/s** |
+| 学習速度 | 21 it/s | 1.7 it/s | **354 it/s** |
 | Backward | 速い | 遅い | **130x改善** |
 | 商用利用 | ❌ | ✅ | ✅ |
-| メモリプール | - | - | **+15%高速化** |
+| DGR比 | 1.0x | 0.08x | **1.29x** |
 
-**商用利用可能で、gsplatより130倍速い。**
+**商用利用可能で、DGRより1.29倍速い。**
 
 ---
 
@@ -237,10 +306,18 @@ RTX 5090（32GB VRAM）での計測結果。
 
 ---
 
-# 今後の予定
+# オープンソース公開
+
+Apache 2.0ライセンスでGitHubに公開しました。
+
+https://github.com/amabito/hyper-rasterizer
+
+⭐ Star、Issue、PRお待ちしています！
+
+## 今後の予定
 
 - FP8対応（Blackwell Tensor Core活用）
-- オープンソース公開
+- さらなる最適化
 
 ---
 

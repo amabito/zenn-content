@@ -7,12 +7,29 @@ published: true
 price: 980
 ---
 
+# 2026/01/25 更新: DGR超え達成
+
+本記事の技術を実装した結果、**DGRを1.29x上回る3713FPS**を達成しました。
+
+### 最終ベンチマーク (N=100K, 800x600)
+
+| モード | FPS | DGR比 |
+|--------|-----|-------|
+| **Hash-SORTED** | **3,713** | **1.29x** |
+| Hash-WSR | 3,413 | 1.19x |
+| Hash-HYBRID | 2,072 | 0.72x |
+| DGR (参考) | 2,870 | 1.0x |
+
+この記事で解説している技術が実際に効果を発揮しています。
+
+---
+
 # この記事で得られるもの
 
 **Backward Passが8000ms→60msになった。130倍の高速化だ。**
 
 - **130倍高速化**を実現したForward-Order手法の設計思想
-- **1M Gaussians @ 1080p = 1000 FPS**達成の最適化技術
+- **DGR超え3713 FPS**達成の最適化技術
 - 実装で必ずハマる罠とその解決策
 
 **対象読者:** CUDAの基礎がわかる人、3DGSを商用利用したい人
@@ -25,9 +42,9 @@ price: 980
 
 - diff-gaussian-rasterization: 商用不可
 - gsplat: 商用OK、でも10倍遅い
-- **HyperRasterizer**: 商用OK、1M Gaussians @ 1080p = 1000 FPS
+- **HyperRasterizer**: 商用OK、**DGR超え3713 FPS**
 
-今回は「どうやって1000 FPSを達成したのか」を、コード付きで完全解説する。
+今回は「どうやってDGRを超えたのか」を、コード付きで完全解説する。
 
 ---
 
@@ -327,18 +344,20 @@ GPU世代ごとに最適なパラメータを自動選択する仕組み:
 
 # まとめ
 
-1000 FPSを達成した技術:
+DGR超え3713 FPSを達成した技術:
 
 | 技術 | 効果 |
 |------|------|
 | Forward-Order Backward | 130x高速化 |
+| Hash-based Forward | ソートボトルネック削減 |
+| 32-bit Compact Keys | メモリ帯域50%削減 |
 | Quad Reduction | Atomic 4x削減 |
 | メモリプール | cudaMallocオーバーヘッド排除 |
 | binning推定最適化 | 73GB → 適正サイズ |
 | Lazy SH評価 | 推論15-25%高速化 |
 | GPU自動検出 | 世代別最適化 |
 
-**結果: gsplat比130倍以上高速、1M Gaussians @ 1080p = 1000 FPS**
+**結果: DGR比1.29x高速、100K Gaussians @ 800x600 = 3713 FPS**
 
 ---
 
