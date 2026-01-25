@@ -1,5 +1,5 @@
 ---
-title: "【有料】3DGSラスタライザをCUDAで実装する：1000FPS達成の全技術"
+title: "【有料】Backward Passを130倍高速化した方法【3DGSラスタライザ】"
 emoji: "🔥"
 type: "tech"
 topics: ["cuda", "3dgs", "gpu", "機械学習", "グラフィックス"]
@@ -9,11 +9,11 @@ price: 980
 
 # この記事で得られるもの
 
-- 3DGSラスタライザのBackward Pass実装方法
-- **130倍高速化**を実現したForward-Order手法の詳細
-- **1M Gaussians @ 1080p = 1000 FPS**を達成した最適化技術
-- 実際に動くCUDAコード（コピペ可）
-- ハマった罠とその解決策
+**Backward Passが8000ms→60msになった。130倍の高速化だ。**
+
+- **130倍高速化**を実現したForward-Order手法の設計思想
+- **1M Gaussians @ 1080p = 1000 FPS**達成の最適化技術
+- 実装で必ずハマる罠とその解決策
 
 **対象読者:** CUDAの基礎がわかる人、3DGSを商用利用したい人
 

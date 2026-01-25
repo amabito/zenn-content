@@ -1,18 +1,23 @@
 ---
-title: "PyTorch CUDA拡張の作り方：Windowsでビルドを通すまでの全記録"
+title: "PyTorch CUDA拡張がビルドできない？Windowsで動かす完全ガイド"
 emoji: "🔧"
 type: "tech"
 topics: ["pytorch", "cuda", "python", "cpp", "windows"]
 published: true
 ---
 
-# PyTorchが遅い。自分でCUDAを書きたい。
+# 結論から言う
 
-PyTorchの標準オペレーションでは速度が出ない。自分でCUDAカーネルを書きたい。
+**PyTorch CUDA拡張のWindowsビルドは罠だらけ。でも、正しい手順を踏めば必ず動く。**
 
-**でも、ビルドが通らない。**
+「C2872エラーで詰んだ」「undefined symbolで動かない」「DLLが見つからない」
 
-この記事では、PyTorch CUDA拡張をWindowsでビルドする方法を解説する。
+WindowsでCUDA拡張をビルドしようとして、こんなエラーに遭遇しませんでしたか？
+
+**この記事で得られること:**
+- Windows特有のビルドエラーと解決策
+- PyTorchバージョン別の互換性表
+- コピペで動くsetup.py
 
 ---
 
