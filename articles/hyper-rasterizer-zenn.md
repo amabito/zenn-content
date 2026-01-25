@@ -82,11 +82,46 @@ Before: cudaMalloc毎フレーム → 2-5ms オーバーヘッド
 After: Memory Pool → ほぼ0ms
 ```
 
+## アーキテクチャ
+
+```mermaid
+flowchart TB
+    subgraph Input
+        G[("Gaussians<br/>N=100K")]
+    end
+
+    subgraph Preprocessing
+        P["Projection<br/>+ Culling<br/>+ SH Eval"]
+    end
+
+    subgraph HashPipeline["Hash-based Pipeline"]
+        H["Spatial Hash<br/>Table"]
+        B["Per-Tile<br/>Bitonic Sort"]
+    end
+
+    subgraph Rendering
+        F["Forward<br/>Kernel"]
+    end
+
+    subgraph Output
+        I[("Image<br/>800x600")]
+    end
+
+    G --> P
+    P --> H
+    H --> B
+    B --> F
+    F --> I
+```
+
 ---
 
 # ベンチマーク
 
 RTX 5090 (Blackwell) での計測結果。
+
+![Benchmark](/images/benchmark_chart.png)
+*N=100K, 800x600, SH=3 での比較*
 
 ## Forward Pass (N=100K, 800x600, SH=3)
 
