@@ -2,13 +2,15 @@
 
 ## 自己紹介（Bio）
 
-3DGS/NeRF専門のソフトウェアエンジニア。商用利用可能な高速3D Gaussian Splattingパイプラインを開発中。
+建設コンサルタント × 3DGSエンジニア。本業の傍ら、商用利用可能な高速3D Gaussian Splattingパイプラインを開発中。
 
-RTX 5090 + CUDA で限界まで最適化するのが好き。
+RTX 5090 + CUDA で限界まで最適化するのが趣味。いつか本業と融合させたい。
 
 ## 自己紹介（長文版）
 
-3D Gaussian Splatting（3DGS）の商用化に取り組んでいます。
+本業は建設コンサルタント。趣味で3D Gaussian Splatting（3DGS）の商用化に取り組んでいます。
+
+**目標:** 建設・土木分野での3DGS活用（現場の3Dスキャン、デジタルツイン、施工管理）
 
 **開発中のプロジェクト:**
 - **HyperRasterizer**: 商用利用可能な3DGSラスタライザ（Apache 2.0）。gsplat比130倍高速。
