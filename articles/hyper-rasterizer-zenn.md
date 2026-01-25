@@ -99,14 +99,10 @@ T_before = T_before / (1-αN-1)   ← また除算
 
 私は**順方向**で勾配を計算する手法を実装した。
 
-```
-T_before = 1.0
-for i = 1 to N:
-    // 勾配計算（T_beforeを使用）
-    T_before = T_before * (1 - αi)   ← 乗算のみ
-```
-
-除算なし。数値的に安定。そしてキャッシュ効率が良い（メモリアクセスが順方向）。
+従来の逆順処理とは異なり:
+- 除算を使わず乗算のみで計算
+- 数値的に安定
+- キャッシュ効率が良い（メモリアクセスが順方向）
 
 **結果: 8000ms → 60ms（130倍高速化）**
 
@@ -160,19 +156,10 @@ RTX 5090のような最新GPUでは、精度を少し犠牲にして速度を稼
 
 ### 4. GPU自動検出
 
-```cpp
-// GPU世代に応じて最適なパラメータを選択
-if (sm >= 120) {      // Blackwell (RTX 5090)
-    batch_size = 512;
-    use_fast_math = true;
-} else if (sm >= 89) { // Ada (RTX 4090)
-    batch_size = 512;
-    use_fast_math = true;
-} else if (sm >= 86) { // Ampere (RTX 3090)
-    batch_size = 256;
-    use_fast_math = true;
-}
-```
+GPU世代（SM番号）を検出し、最適なパラメータを自動選択:
+- Blackwell/Ada世代: 大きなバッチサイズ、Fast Math有効
+- Ampere世代: 中程度のバッチサイズ
+- 旧世代: 控えめな設定
 
 ### 5. Quad Reduction
 
@@ -240,7 +227,7 @@ RTX 5090（32GB VRAM）での計測結果。
 
 **問題2: binning推定の爆発**
 - 1M Gaussians @ 1080pで73GBを要求
-- 解決: 5%タイルカバレッジ推定 + 256タイル/Gaussianキャップ + 4GBハードキャップ
+- 解決: 現実的なカバレッジ推定 + 適切なキャップ設定
 - 結果: **0.1 FPS → 1000 FPS**
 
 ## Quad Reductionのwarp同期

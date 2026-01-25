@@ -166,58 +166,15 @@ $\alpha_i \approx 1$ のとき、$(1 - \alpha_i) \approx 0$ で除算が爆発�
 2. キャッシュ効率が良い（順方向アクセス）
 3. Forward Passの中間値を保存する必要がない（メモリ節約）
 
-## 実装
+## 実装のポイント
 
-```cuda
-__device__ void backward_pixel_forward_order(
-    int N,
-    const float* colors,       // [N, 3]
-    const float* alphas,       // [N]
-    const float* dL_dC,        // 上流勾配 [3]
-    float* dL_dcolors,         // 出力: 色への勾配 [N, 3]
-    float* dL_dalphas          // 出力: αへの勾配 [N]
-) {
-    // ========================================
-    // Phase 1: Forward Pass（T_iを計算しながら進む）
-    // ========================================
-    float T = 1.0f;
-    float C[3] = {0, 0, 0};      // 累積色
-    float prefix_sum[3] = {0, 0, 0};  // Σ_{j<i} c_j * α_j * T_j
+Forward-Order Backwardの実装には以下の要素が必要:
 
-    for (int i = 0; i < N; i++) {
-        float alpha = alphas[i];
-        float weight = alpha * T;
+1. **順方向でT_iを再計算**: Forward Passと同じ順序でループ
+2. **色への勾配**: `∂L/∂c_i = ∂L/∂C * α_i * T_i` を順方向で計算
+3. **αへの勾配**: prefix sumを使って効率的に計算
 
-        // --- 色への勾配 ---
-        // ∂L/∂c_i = ∂L/∂C * α_i * T_i
-        dL_dcolors[i * 3 + 0] = dL_dC[0] * weight;
-        dL_dcolors[i * 3 + 1] = dL_dC[1] * weight;
-        dL_dcolors[i * 3 + 2] = dL_dC[2] * weight;
-
-        // --- αへの勾配 ---
-        // ∂L/∂α_i = ∂L/∂C * T_i * (c_i - Σ_{j>i} c_j * α_j * T_j / T_i)
-        //
-        // これを効率的に計算するため、後ろからの累積和が必要...
-        // → Phase 2で計算
-
-        // prefix_sumを更新（後でPhase 2で使う）
-        prefix_sum[0] += weight * colors[i * 3 + 0];
-        prefix_sum[1] += weight * colors[i * 3 + 1];
-        prefix_sum[2] += weight * colors[i * 3 + 2];
-
-        // 透過率を更新
-        T *= (1.0f - alpha);
-
-        if (T < 0.0001f) break;
-    }
-
-    // ========================================
-    // Phase 2: αへの勾配（少しトリッキー）
-    // ========================================
-    // 後ろからの累積和を使って効率的に計算
-    // （詳細は本文参照）
-}
-```
+詳細な実装コードはHyperRasterizerソースコードを参照。
 
 **結果: 8000ms → 60ms（130倍高速化）**
 
@@ -239,47 +196,21 @@ atomicAdd(&dL_drgbs[gaussian_id * 3 + 2], dL_drgb_local[2]);
 
 ## 解決: Quad（2x2ピクセル）で事前集約
 
-```cuda
-// 4ピクセル（2x2）で値を集約してからAtomic
-__device__ float quad_reduce(float val) {
-    // warp内の隣接4スレッドで合計
-    val += __shfl_xor_sync(0xFFFFFFFF, val, 1);  // 横方向
-    val += __shfl_xor_sync(0xFFFFFFFF, val, 2);  // 縦方向
-    return val;
-}
-
-// 使用例
-float local_grad = compute_gradient();
-float quad_sum = quad_reduce(local_grad);
-
-// 4スレッドのうち1つだけがAtomic実行
-if ((threadIdx.x & 3) == 0) {
-    atomicAdd(&global_grad, quad_sum);
-}
-```
+Quad Reductionの基本アイデア:
+- 4ピクセル（2x2）で勾配を集約してから1回のAtomicを実行
+- `__shfl_xor_sync`を使ってwarp内でデータを交換
+- 4スレッドのうち1つだけがAtomic実行
 
 **効果: Atomic操作が4分の1に削減**
 
 ## 落とし穴: warp同期問題
 
-最初の実装はデッドロックした。
+`__shfl_xor_sync`は**全スレッドが参加**しないとデッドロックする。
 
-```cuda
-// NG: 条件分岐内でshfl_xor_sync
-if (inside_tile) {
-    val += __shfl_xor_sync(0xFFFFFFFF, val, 1);  // 💥 デッドロック！
-}
-```
+**NG**: 条件分岐内でshfl_xor_syncを呼ぶ
+**OK**: 条件分岐の外でshflを呼び、結果を条件分岐内で使う
 
-`__shfl_xor_sync`は**全スレッドが参加**しないとハングする。
-
-```cuda
-// OK: 条件分岐の外でshfl
-float shuffled = __shfl_xor_sync(0xFFFFFFFF, val, 1);
-if (inside_tile) {
-    val += shuffled;  // ✅ 安全
-}
-```
+詳細は [CUDA warp同期の罠](https://zenn.dev/amabito/articles/cuda-warp-sync-trap) を参照。
 
 ---
 
@@ -301,64 +232,28 @@ void render_frame() {
 
 ## 解決: フレームベースメモリプール
 
-```cpp
-class MemoryPool {
-    char* pool_ptr;
-    size_t pool_size;
-    size_t offset;
-
-public:
-    void init(size_t size) {
-        cudaMalloc(&pool_ptr, size);
-        cudaMemset(pool_ptr, 0, size);  // ゼロ初期化が重要！
-        pool_size = size;
-    }
-
-    void* allocate(size_t size) {
-        size = align_to(size, 256);  // アライメント
-        void* ptr = pool_ptr + offset;
-        offset += size;
-        return ptr;
-    }
-
-    void reset() {
-        offset = 0;  // フレーム終了時にリセット
-    }
-};
-```
+メモリプールの基本構造:
+- 起動時に大きなバッファを1回だけ確保
+- フレームごとにオフセットをリセットして再利用
+- アライメントに注意（256バイト境界推奨）
 
 ## 問題2: first-frame bug
 
-最初のフレームだけ出力が真っ黒になった。
+最初のフレームだけ出力が真っ黒になる問題。
 
-**原因**: cudaMallocはメモリを初期化しない。GPUキャッシュに古いデータが残っている。
-
-**解決**: `cudaMemset`でゼロ初期化。
-
-```cpp
-cudaMalloc(&buffer, size);
-cudaMemset(buffer, 0, size);  // これを忘れると first-frame bug
-```
+**原因**: cudaMallocはメモリを初期化しない
+**解決**: `cudaMemset`でゼロ初期化
 
 ## 問題3: binning推定の爆発
 
 1M Gaussians @ 1080pで、メモリ推定が**73GB**になった。
 
-**原因**: 各Gaussianが画面の25%のタイルに影響すると仮定していた。
+**原因**: タイルカバレッジの過大推定
 
-**解決**:
-```cpp
-// 修正版: 控えめな推定 + キャップ
-size_t estimate_binning_size(int num_gaussians, int num_tiles) {
-    // 5%タイルカバレッジ推定
-    size_t avg_tiles = num_tiles * 0.05f;
-    // 256タイル/Gaussianでキャップ
-    avg_tiles = min(avg_tiles, 256);
-    // 4GBハードキャップ
-    size_t total = num_gaussians * avg_tiles * sizeof(uint64_t);
-    return min(total, 4ULL * 1024 * 1024 * 1024);
-}
-```
+**解決のポイント**:
+- 現実的なタイルカバレッジ推定
+- Gaussian当たりのタイル数にキャップを設ける
+- 全体にハードキャップを設ける
 
 **結果: 0.1 FPS → 1000 FPS**
 
@@ -379,34 +274,10 @@ for (int i = 0; i < N; i++) {
 
 ## Lazy: 必要な時だけ評価
 
-```cuda
-// forward.cu内で評価
-__device__ float3 eval_sh_lazy(
-    const float* sh_coeffs,
-    float3 gaussian_center,
-    float3 camera_pos
-) {
-    float3 dir = normalize(gaussian_center - camera_pos);
-    return eval_sh_inline(sh_coeffs, dir);
-}
-
-__global__ void render_forward_lazy_sh(...) {
-    // カメラ位置を共有メモリにキャッシュ
-    __shared__ float3 cam_pos;
-    if (threadIdx.x == 0) {
-        cam_pos = extract_camera_position(view_matrix);
-    }
-    __syncthreads();
-
-    // レンダリングループ内でSH評価
-    for (int i = range_start; i < range_end; i++) {
-        if (is_visible(gaussian)) {
-            float3 rgb = eval_sh_lazy(sh_coeffs, center, cam_pos);
-            // ... レンダリング ...
-        }
-    }
-}
-```
+Lazy SH評価の実装ポイント:
+- レンダリングループ内でSH評価（前処理ではなく）
+- カメラ位置を共有メモリにキャッシュして高速化
+- 視錐台カリングで除外されるGaussianの評価をスキップ
 
 **効果: 推論時15-25%高速化（カリング率に依存）**
 
@@ -440,34 +311,17 @@ if (lane_id == 0) {
 
 # GPU別最適化
 
-```cpp
-// runtime_config.h
-struct RuntimeConfig {
-    int batch_size;
-    bool use_fast_math;
-};
-
-RuntimeConfig get_config() {
-    int sm;
-    cudaDeviceGetAttribute(&sm, cudaDevAttrComputeCapabilityMajor, 0);
-
-    if (sm >= 12) {        // Blackwell (RTX 5090)
-        return {512, true};
-    } else if (sm >= 8) {  // Ampere/Ada
-        return {256, true};
-    } else {
-        return {128, false};
-    }
-}
-```
+GPU世代ごとに最適なパラメータを自動選択する仕組み:
+- SM (Compute Capability) を検出
+- バッチサイズとFast Math設定を調整
 
 | GPU | SM | Batch | FastMath |
 |-----|-----|-------|----------|
-| RTX 5090 | ≥120 | 512 | ON |
-| RTX 4090 | ≥89 | 512 | ON |
-| RTX 3090 | ≥86 | 256 | ON |
-| RTX 2080 | ≥75 | 256 | ON |
-| GTX 1080 | ≥60 | 128 | OFF |
+| RTX 5090 | ≥120 | 大 | ON |
+| RTX 4090 | ≥89 | 大 | ON |
+| RTX 3090 | ≥86 | 中 | ON |
+| RTX 2080 | ≥75 | 中 | ON |
+| GTX 1080 | ≥60 | 小 | OFF |
 
 ---
 
