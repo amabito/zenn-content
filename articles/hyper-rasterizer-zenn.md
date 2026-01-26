@@ -6,11 +6,13 @@ topics: ["3dgs", "cuda", "機械学習", "コンピュータグラフィック�
 published: true
 ---
 
-# TL;DR
+# 結論から言う
 
-- **diff-gaussian-rasterization (DGR)** は商用利用不可
-- **gsplat** は遅い（DGRの1/5程度）
-- → **Apache 2.0で1.45倍高速**なラスタライザを作った
+**3DGSの商用利用可能なラスタライザを自作し、公式実装（DGR）の1.45倍高速を達成した。**
+
+- diff-gaussian-rasterization（DGR）は商用利用不可
+- gsplatは遅い（DGRの1/5程度）
+- → Apache 2.0で1.45倍高速なラスタライザを作った
 
 ---
 
