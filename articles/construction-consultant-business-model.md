@@ -3,7 +3,7 @@ title: "建設コンサルって何してる？ビジネスモデルを15年選�
 emoji: "📊"
 type: "tech"
 topics: ["建設コンサルタント", "ビジネスモデル", "経営", "建設業", "公共事業"]
-published: false
+published: true
 ---
 
 # 結論から言う

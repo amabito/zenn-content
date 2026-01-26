@@ -3,7 +3,7 @@ title: "【有料】GPU高速化実践ガイド：CUDA/PyTorchで実務を10倍�
 emoji: "🔥"
 type: "tech"
 topics: ["GPU", "CUDA", "PyTorch", "高速化", "機械学習"]
-published: false
+published: true
 price: 1480
 ---
 

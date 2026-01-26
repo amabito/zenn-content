@@ -3,7 +3,7 @@ title: "【有料】年収1000万エンジニアの具体的戦略【スキル�
 emoji: "💎"
 type: "idea"
 topics: ["キャリア", "エンジニア", "年収", "転職", "スキルアップ"]
-published: false
+published: true
 price: 980
 ---
 

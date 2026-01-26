@@ -3,7 +3,7 @@ title: "中小建設会社が生き残る5つの戦略：2026年版"
 emoji: "🏢"
 type: "tech"
 topics: ["建設業", "経営", "中小企業", "建設DX", "経営戦略"]
-published: false
+published: true
 ---
 
 # 結論から言う
