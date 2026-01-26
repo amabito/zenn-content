@@ -193,6 +193,18 @@ optimizer = torch.optim.Adam([
 ])
 ```
 
+:::message
+**バグの根本原因をもっと深く理解したい方へ**
+
+上記3つのバグは「表面的な修正」です。有料記事では、**なぜこのバグが起きるのか**を数学的背景から解説しています:
+
+- Forward-Order Backward Passの数学（除算→乗算で130倍高速化）
+- Quad Reductionのwarp同期問題と完全な解決コード
+- メモリプールのbinning推定が破綻するケースと対策
+
+→ [【有料】Backward Passを130倍高速化した方法](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid)
+:::
+
 ---
 
 # 速度比較
@@ -280,12 +292,16 @@ for i in range(30000):
 
 # 関連記事
 
-## HyperRasterizerシリーズ
-- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 4169 FPS達成の全技術
-- [【有料】HyperRasterizer実装ガイド](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid) - CUDAカーネル詳細
+## 段階的に学ぶ
 
-## 3DGSシリーズ
-- [3DGSを商用利用したい人へ](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題
+1. 📖 **基礎**: [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 4169 FPS達成の全技術
+2. 🔧 **トレーニング**: この記事（DGR比+50%高速な学習）
+3. ⚡ **高速化の核心**: [【有料】Backward Passを130倍高速化した方法](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid) - Forward-Order実装、Quad Reduction
+
+## 事業化する
+
+- [3DGS商用化ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題の整理
+- [【有料】3DGSラスタライザ自作ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide-paid) - 商用化の全手順
 - [ブラウザで3DGSを表示する](https://zenn.dev/amabito/articles/hyper-viewer-webgpu) - WebGPUビューア
 
 ---

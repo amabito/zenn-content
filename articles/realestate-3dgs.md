@@ -313,16 +313,31 @@ OK: 整理整頓、全照明ON
 
 ---
 
+:::message alert
+**月5件→月50件にスケールしたい方へ**
+
+この記事は導入の概要です。実際にスケールする段階では、**撮影SOP**、**品質管理フロー**、**ポータルサイト連携**が成否を分けます。
+
+有料記事では、月50件体制への具体的な成長戦略を解説しています:
+
+- 物件タイプ別の撮影SOP（ワンルーム/ファミリー/戸建て）
+- 検収チェックリスト（10項目）
+- SUUMO/HOME'S/at home連携の技術手順
+- 外注化→システム化のフェーズ別ロードマップ
+
+→ [【有料】不動産×3DGS事業拡大マニュアル](https://zenn.dev/amabito/articles/realestate-3dgs-paid)
+:::
+
 # 関連記事
+
+## 不動産3DGSを深掘り
+- [【有料】事業拡大マニュアル](https://zenn.dev/amabito/articles/realestate-3dgs-paid) - 月5件→月50件への成長戦略
 
 ## 3DGSシリーズ
 - [3DGSとは？ビジネス活用ガイド](https://zenn.dev/amabito/articles/3dgs-business-guide) - 基礎知識
 - [3DGS商用化ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題
 
 ## 業界DXシリーズ
-- [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 建設業での活用
-- [i-Construction 2.0の理想と現実](https://zenn.dev/amabito/articles/iconstruction-2-reality) - 建設DXの実態
-
----
-
-導入相談はコメント欄へ。
+- [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - ドローン15分で現場3D化
+- [製造業×3DGS](https://zenn.dev/amabito/articles/manufacturing-3dgs) - 工場ライン3Dスキャン
+- [EC×3DGS](https://zenn.dev/amabito/articles/ecommerce-3dgs-product-visualization) - 商品3D化で購買率2倍

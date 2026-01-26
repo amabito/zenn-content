@@ -283,6 +283,21 @@ PyTorch: 機械学習に最適化
 CUDA: 理論限界まで追い込む
 ```
 
+:::message alert
+**実務でGPUを使いこなしたい方へ**
+
+この記事はLevel 1（CuPy）までの内容です。実務では**メモリ転送の最適化**、**カーネル設計**、**プロファイリング**が性能を10倍左右します。
+
+有料記事では、CuPy→CUDA→実務レベルまでの具体的な最適化テクニックを解説しています:
+
+- メモリコピー最小化で30%高速化する方法
+- ブロック/スレッド設計で占有率を最大化
+- 共有メモリとL2キャッシュの使い分け
+- Nsight Computeでボトルネックを特定する手順
+
+→ [【有料】GPU高速化実践ガイド：CUDA/PyTorchで実務を10倍速にする](https://zenn.dev/amabito/articles/gpu-programming-paid)
+:::
+
 ---
 
 # まとめ
@@ -300,11 +315,16 @@ CUDA: 理論限界まで追い込む
 
 # 関連記事
 
-## GPU/CUDA シリーズ
-- [【有料】GPU高速化実践ガイド](https://zenn.dev/amabito/articles/gpu-programming-paid) - CUDA/PyTorchで10倍速
-- [RTX 5090 CUDA最適化](https://zenn.dev/amabito/articles/rtx5090-cuda-optimization) - 最新GPU活用
-- [CUDAメモリ管理の罠](https://zenn.dev/amabito/articles/cuda-memory-management) - 中級者向け
+## 次に読むべき記事
 
-## 活用事例
-- [3DGSを商用利用したい人へ](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - GPU活用の実例
-- [Claude Codeで開発効率3倍](https://zenn.dev/amabito/articles/claude-code-productivity) - AI×開発
+**🎯 実務で使いたい方:**
+- [【有料】GPU高速化実践ガイド](https://zenn.dev/amabito/articles/gpu-programming-paid) - メモリ最適化、カーネル設計、プロファイリング
+- [【有料】RTX 5090ベンチマーク詳細](https://zenn.dev/amabito/articles/rtx5090-cuda-optimization-paid) - 最新GPU実測データ
+
+**📚 無料で深掘り:**
+- [RTX 5090 CUDA最適化](https://zenn.dev/amabito/articles/rtx5090-cuda-optimization) - 最新GPU活用
+- [CUDAメモリ管理の罠](https://zenn.dev/amabito/articles/cuda-memory-management) - first-frame bugと73GB問題
+- [CUDA warp同期の罠](https://zenn.dev/amabito/articles/cuda-warp-sync-trap) - __shfl_xor_syncの落とし穴
+
+**💡 GPU活用事例:**
+- [4169FPS達成の3DGSラスタライザ](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - GPU活用の実例

@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["cuda", "gpu", "rtx5090", "blackwell", "最適化"]
 published: true
-price: 980
+price: 1480
 ---
 
 # この記事で得られるもの
@@ -261,6 +261,62 @@ Warp Reduction: shuffle 5回 + sync = 高コスト
 
 ---
 
+# SM120 (Blackwell) 固有の最適化
+
+## RTX 4090 → RTX 5090で変わったこと
+
+| 項目 | RTX 4090 (Ada) | RTX 5090 (Blackwell) | 影響 |
+|------|---------------|---------------------|------|
+| L2キャッシュ | 72MB | **96MB** | データ配置戦略が変わる |
+| Atomicスループット | 高 | **非常に高** | Warp Reductionが不要に |
+| 共有メモリ | 100KB/SM | **99KB/SM** | ほぼ同等 |
+| SM数 | 128 | **170** | 並列度が33%向上 |
+| メモリ帯域 | 1008 GB/s | **1792 GB/s** | メモリバウンドが緩和 |
+
+## 実践: L2 96MB を活かす設計
+
+RTX 5090の96MB L2キャッシュは、**100K Gaussians分のデータ（約24MB）を丸ごとキャッシュできる**。
+
+```cpp
+// Gaussianあたりのデータ量
+// position(12B) + rotation(16B) + scale(12B) + opacity(4B) + SH(192B) = 236B
+// 100K × 236B = 23.6MB → L2 96MBに完全に収まる
+
+// 500K Gaussiansでも position+scale+opacity = 28B × 500K = 14MB
+// → 頻繁にアクセスする属性だけなら500Kでもキャッシュに載る
+```
+
+**設計指針**: preprocessing段階でSoA配列を使い、forward/backwardで同じ属性に連続アクセスさせる。
+
+## 実践: Atomicの使い分け
+
+```
+RTX 4090まで: atomicAdd競合 → Warp/Block Reductionで削減が有効
+RTX 5090:     atomicAdd競合 → L2キャッシュ + 強化Atomicユニットで吸収
+```
+
+**判断基準**:
+- 競合スレッド数 < 256 → **直接Atomic**（RTX 5090ではこれが最速）
+- 競合スレッド数 > 256 → **Quad Reduction**（4スレッド集約）
+- Warp Reduction（32スレッド集約）→ **RTX 5090では非推奨**
+
+## Nsight Computeで確認すべきメトリクス
+
+```bash
+ncu --set full ./your_kernel
+```
+
+| メトリクス | 目標値 | 意味 |
+|-----------|--------|------|
+| `l2_cache_hit_rate` | > 80% | L2キャッシュ活用度 |
+| `sm__warps_active.avg.pct_of_peak_sustained_active` | > 60% | SM占有率 |
+| `gpu__compute_memory_throughput.avg.pct_of_peak_sustained_elapsed` | > 50% | メモリ帯域利用率 |
+| `sm__sass_thread_inst_executed_op_fadd_pred_on.sum.per_cycle_elapsed` | - | FP32演算効率 |
+
+**RTX 5090で特に注意**: `l2_cache_hit_rate`が60%以下ならデータ配置を見直す。96MBもあるのにヒットしないのはアクセスパターンが悪い証拠。
+
+---
+
 # L2キャッシュ活用の実践
 
 ## データ配置の最適化
@@ -308,6 +364,23 @@ void process_large_data(float* data, size_t total_size) {
 
 ---
 
+# RTX 5090最適化チェックリスト
+
+実装時にこの順番でチェックする:
+
+```
+□ 1. データ構造をSoA（配列の構造体）にする
+□ 2. 頻繁にアクセスする属性をメモリ上で連続配置
+□ 3. runtime_config.hでGPU自動検出を入れる
+□ 4. カーネルをテンプレート化（batch_size, fast_math）
+□ 5. __expf/__logf等のfast math関数を使う
+□ 6. Warp Reductionを直接Atomicに置き換える
+□ 7. 競合 > 256スレッドの箇所だけQuad Reduction
+□ 8. Nsight Computeでl2_cache_hit_rate確認（目標80%+）
+□ 9. 共有メモリでタイル単位のデータ再利用
+□ 10. __syncthreads_and()で早期終了を実装
+```
+
 # まとめ
 
 RTX 5090での最適化で学んだこと:
@@ -319,8 +392,10 @@ RTX 5090での最適化で学んだこと:
 | テンプレート化 | 必須。GPU世代別に最適化 |
 | L2キャッシュ | 96MBを意識したデータ配置 |
 | Fast Math | 積極的に使う。精度低下は実用上問題なし |
+| SM120固有 | Atomic強化を前提に設計を変える |
+| Nsight Compute | l2_cache_hit_rate > 80%を目標に |
 
-**最重要**: 理論を信じず、必ず実測する。
+**最重要**: 理論を信じず、必ず実測する。特にGPU世代が変わったら、過去の最適化が逆効果になることがある。
 
 ---
 

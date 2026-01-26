@@ -223,11 +223,31 @@ A: 苦手。対策:
 
 ---
 
+:::message alert
+**PoCから本格運用まで具体的に進めたい方へ**
+
+この記事は活用シーンとROIの概要です。実際の導入では**撮影SOP**、**品質基準**、**社内稟議**の壁があります。
+
+有料記事では、PoC実行から全社展開までの完全ロードマップを解説しています:
+
+- Day 1〜5のPoC実行マニュアル
+- 工場特有の撮影SOP（プレス機/組立ライン/クリーンルーム）
+- 品質基準A/B/Cランク設計と検収チェックリスト（15項目）
+- 稟議書のROI算出テンプレート
+- 5つの失敗パターンと対策
+
+→ [【有料】製造業×3DGS導入ロードマップ](https://zenn.dev/amabito/articles/manufacturing-3dgs-paid)
+:::
+
 # 関連記事
+
+## 製造業3DGSを深掘り
+- [【有料】導入ロードマップ](https://zenn.dev/amabito/articles/manufacturing-3dgs-paid) - PoCから本格運用までの全手順
 
 ## 業界×3DGSシリーズ
 - [建設×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - ドローン15分で現場3D化
 - [不動産×3DGS](https://zenn.dev/amabito/articles/realestate-3dgs) - 内見数7割削減
+- [EC×3DGS](https://zenn.dev/amabito/articles/ecommerce-3dgs-product-visualization) - 商品3D化で購買率2倍
 
 ## 技術シリーズ
 - [3DGSとは？](https://zenn.dev/amabito/articles/3dgs-business-guide) - 経営者向け解説

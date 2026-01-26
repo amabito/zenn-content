@@ -116,6 +116,19 @@ flowchart TB
     F --> I
 ```
 
+:::message
+**内部実装を深掘りしたい方へ**
+
+上記のHash-based ForwardやMemory Poolの**実装コード**は有料記事で解説しています:
+
+- Forward-Order Backward Pass（130倍高速化の数学と実装）
+- Quad Reductionによるatomic操作4倍削減
+- メモリプール設計（binning推定の勘所）
+- RTX 5090実測ベンチマーク
+
+→ [【有料】Backward Passを130倍高速化した方法](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid)
+:::
+
 ---
 
 # ベンチマーク
@@ -204,11 +217,15 @@ Issue、PR、フィードバック歓迎です。
 
 # 関連記事
 
-## 技術詳細
-- [【有料】Backward Passを130倍高速化した方法](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid) - 実装の詳細
+## HyperRasterizerを使いこなす
 
-## 3DGSシリーズ
+**🔧 実装の深掘り:**
+- [【有料】Backward Passを130倍高速化した方法](https://zenn.dev/amabito/articles/hyper-rasterizer-impl-paid) - Forward-Order実装、Quad Reduction、メモリプール設計
+- [HyperRasterizerでトレーニング](https://zenn.dev/amabito/articles/hyper-rasterizer-training) - DGRより50%高速な学習
+
+**💼 ビジネスで使う:**
 - [3DGS商用化ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題の整理
+- [【有料】3DGSラスタライザ自作ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide-paid) - 商用化の全手順
 - [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 実用事例
 
 ## CUDA開発
