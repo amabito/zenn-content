@@ -203,7 +203,7 @@ result = my_ext.my_function(input)
 - **この記事** → PyTorch CUDA拡張の罠
 
 ## 3DGSシリーズ
-- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 1000FPS達成の独自ラスタライザ
+- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 4169FPS達成の独自ラスタライザ
 - [3DGS商用化ガイド](https://zenn.dev/amabito/articles/3dgs-commercial-guide) - ライセンス問題の整理
 - [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 実用事例
 

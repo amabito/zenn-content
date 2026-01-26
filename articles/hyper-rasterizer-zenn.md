@@ -1,5 +1,5 @@
 ---
-title: "商用OKで最速の3DGSラスタライザを作った【DGR 1.45x】"
+title: "商用OKで最速の3DGSラスタライザを作った【4169FPS達成】"
 emoji: "🚀"
 type: "tech"
 topics: ["3dgs", "cuda", "機械学習", "コンピュータグラフィックス", "OSS"]
@@ -10,7 +10,7 @@ published: true
 
 - **diff-gaussian-rasterization (DGR)** は商用利用不可
 - **gsplat** は遅い（DGRの1/5程度）
-- → **Apache 2.0で1.45x高速**なの作った
+- → **Apache 2.0で1.45倍高速**なラスタライザを作った
 
 ---
 

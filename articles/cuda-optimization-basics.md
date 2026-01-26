@@ -296,7 +296,7 @@ ncu --set full ./my_program
 - [CUDA warp同期の罠](https://zenn.dev/amabito/articles/cuda-warp-sync-trap) - デッドロック回避
 
 ## 3DGSシリーズ
-- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 1000FPS達成の技術
+- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 4169FPS達成の技術
 
 ---
 

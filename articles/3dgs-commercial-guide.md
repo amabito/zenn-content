@@ -190,7 +190,7 @@ See [LICENSE](LICENSE) for details.
 # 関連記事
 
 ## 3DGSシリーズ
-- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 1000FPS達成の独自ラスタライザ
+- [HyperRasterizer完全解説](https://zenn.dev/amabito/articles/hyper-rasterizer-zenn) - 4169FPS達成の独自ラスタライザ
 - **この記事** → 商用化ガイド（ライセンス問題）
 - [建設現場×3DGS](https://zenn.dev/amabito/articles/construction-3dgs) - 実用事例
 
