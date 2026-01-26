@@ -291,7 +291,7 @@ MCPが連携:
 # 関連記事
 
 ## Claude Codeシリーズ
-- [Claude Code Hook活用](https://zenn.dev/amabito/articles/claude-code-hooks) - 自動化テクニック
+- [Claude Code Hook活用](https://zenn.dev/amabito/articles/claude-code-hooks-automation) - 自動化テクニック
 - [Discord×Claude Code](https://zenn.dev/amabito/articles/discord-claude-code-bot) - チーム連携
 
 ## 技術シリーズ

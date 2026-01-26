@@ -266,7 +266,6 @@ After: 建設×3DGSスペシャリスト（副業込み1,200万円）
 
 ## キャリアシリーズ
 - [建設コンサルタントの年収リアル](https://zenn.dev/amabito/articles/construction-consultant-salary) - 業界別年収
-- [技術士取得ロードマップ](https://zenn.dev/amabito/articles/pe-exam-roadmap) - 合格への最短ルート
 
 ## 技術シリーズ
 - [CUDA最適化入門](https://zenn.dev/amabito/articles/cuda-optimization-basics) - GPU開発の基礎

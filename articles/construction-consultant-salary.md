@@ -272,7 +272,6 @@ published: true
 # 関連記事
 
 ## キャリアシリーズ
-- [技術士取得ロードマップ](https://zenn.dev/amabito/articles/pe-exam-roadmap) - 合格への最短ルート
 - [建設コンサルタントのリアル](https://zenn.dev/amabito/articles/construction-consultant-reality) - DXが進まない本当の理由
 
 ## 建設DXシリーズ

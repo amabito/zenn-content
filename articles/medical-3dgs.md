@@ -279,7 +279,7 @@ CT/MRIからの3D再構成:
 
 ## 業界×3DGSシリーズ
 - [製造業×3DGS](https://zenn.dev/amabito/articles/manufacturing-3dgs) - 工場ライン3D化
-- [EC×3DGS](https://zenn.dev/amabito/articles/ec-3dgs) - 商品3D表示
+- [EC×3DGS](https://zenn.dev/amabito/articles/ecommerce-3dgs-product-visualization) - 商品3D表示
 
 ## 技術シリーズ
 - [3DGSとは？](https://zenn.dev/amabito/articles/3dgs-business-guide) - 経営者向け解説

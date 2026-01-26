@@ -334,7 +334,3 @@ PLY出力
 - [【有料】3DGS画像前処理完全ガイド](https://zenn.dev/amabito/articles/3dgs-image-preprocessing-paid) - ブラー除去、露出補正
 
 ---
-
-詳細な機材比較、処理パラメータ、トラブルシューティングは有料記事で解説しています。
-
-https://zenn.dev/amabito/articles/drone-survey-guide-paid

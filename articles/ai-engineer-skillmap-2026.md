@@ -357,7 +357,7 @@ AIに代替されにくいこと:
 
 ## Claude Codeシリーズ
 - [Claude Code MCP入門](https://zenn.dev/amabito/articles/claude-code-mcp-intro) - 外部ツール連携
-- [Claude Code Hook活用](https://zenn.dev/amabito/articles/claude-code-hooks) - 自動化テクニック
+- [Claude Code Hook活用](https://zenn.dev/amabito/articles/claude-code-hooks-automation) - 自動化テクニック
 
 ## 技術シリーズ
 - [3DGSとは？](https://zenn.dev/amabito/articles/3dgs-business-guide) - 経営者向け解説
