@@ -4,7 +4,7 @@ emoji: "🎓"
 type: "tech"
 topics: ["3DGS", "教育", "EdTech", "3D", "VR"]
 published: true
-published_at: "2026-01-27 07:00"
+published_at: "2026-02-02 12:00"
 ---
 
 # 結論から言う

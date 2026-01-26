@@ -4,7 +4,7 @@ emoji: "🏭"
 type: "tech"
 topics: ["製造業", "3DGS", "DX", "スマートファクトリー", "品質管理"]
 published: true
-published_at: "2026-01-27 07:00"
+published_at: "2026-01-27 12:00"
 price: 1480
 ---
 
