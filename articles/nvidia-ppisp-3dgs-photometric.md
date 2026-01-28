@@ -3,7 +3,8 @@ title: "NVIDIAが公開したPPISP：3DGSの色ズレを物理ベースで解決
 emoji: "📷"
 type: "tech"
 topics: ["3DGS", "CUDA", "NVIDIA", "GaussianSplatting", "ComputerVision"]
-published: false
+published: true
+published_at: "2026-01-31 07:00"
 ---
 
 # 結論から言う

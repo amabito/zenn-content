@@ -3,7 +3,8 @@ title: "Claude Code vs GitHub Copilot 2026：AI開発ツール実践比較"
 emoji: "⚔️"
 type: "tech"
 topics: ["ClaudeCode", "GitHubCopilot", "AI", "開発効率化", "Cursor"]
-published: false
+published: true
+published_at: "2026-01-31 18:00"
 ---
 
 # 結論から言う

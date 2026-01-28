@@ -3,7 +3,8 @@ title: "gsplat + 3DGUT：歪みカメラ対応で3DGSの制約が消えた"
 emoji: "📸"
 type: "tech"
 topics: ["3DGS", "gsplat", "nerfstudio", "CUDA", "カメラ"]
-published: false
+published: true
+published_at: "2026-02-01 18:00"
 ---
 
 # 結論から言う
