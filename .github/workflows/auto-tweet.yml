@@ -1,34 +1,22 @@
-name: Scheduled Article Publishing
+name: Auto Tweet New Articles
 
 on:
-  schedule:
-    # 毎日朝7時（日本時間）に実行 = UTC 22:00
-    - cron: '0 22 * * *'
-  workflow_dispatch:
-    inputs:
-      count:
-        description: '公開する記事数'
-        required: false
-        default: '5'
+  push:
+    branches: [main]
+    paths: ['articles/**']
 
 jobs:
-  publish:
+  tweet:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Publish articles
-        run: |
-          python scripts/publish_articles.py ${{ github.event.inputs.count || '5' }}
-
-      - name: Install tweepy
+      - name: Install dependencies
         run: pip install tweepy
 
       - name: Tweet new articles
@@ -39,14 +27,14 @@ jobs:
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         run: python scripts/tweet_new_articles.py
 
-      - name: Commit and push
+      - name: Commit tweeted articles list
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add articles/ .tweeted-articles
+          git add .tweeted-articles
           if git diff --staged --quiet; then
-            echo "No articles to publish"
+            echo "No new tweets"
           else
-            git commit -m "chore: 記事を自動公開 (scheduled)"
+            git commit -m "chore: update tweeted articles list"
             git push
           fi
