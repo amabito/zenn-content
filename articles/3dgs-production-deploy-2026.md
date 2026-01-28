@@ -4,7 +4,7 @@ emoji: "🏭"
 type: "tech"
 topics: ["3DGS", "GaussianSplatting", "商用化", "WebGPU", "UnrealEngine"]
 published: true
-published_at: "2026-02-01 12:00"
+published_at: "2026-02-01 21:00"
 ---
 
 # 結論から言う

@@ -3,7 +3,8 @@ title: "Splat-Portrait：3DGSで音声からTalking Headを生成する新手法
 emoji: "🗣️"
 type: "tech"
 topics: ["3DGS", "GaussianSplatting", "ComputerVision", "AI", "TalkingHead"]
-published: false
+published: true
+published_at: "2026-01-28 18:00"
 ---
 
 # 結論から言う

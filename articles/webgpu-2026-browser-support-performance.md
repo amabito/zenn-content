@@ -3,7 +3,8 @@ title: "WebGPU 2026最新動向：70%ブラウザサポート・15倍高速化�
 emoji: "🚀"
 type: "tech"
 topics: ["WebGPU", "WebGL", "3D", "GPU", "ブラウザ"]
-published: false
+published: true
+published_at: "2026-01-29 12:00"
 ---
 
 # 結論から言う

@@ -3,7 +3,8 @@ title: "3DGS品質チェックリスト完全版：PSNR 30→35への道【本�
 emoji: "✅"
 type: "tech"
 topics: ["3DGS", "品質管理", "チェックリスト", "PSNR", "本番環境"]
-published: false
+published: true
+published_at: "2026-01-30 21:00"
 ---
 
 # 結論から言う

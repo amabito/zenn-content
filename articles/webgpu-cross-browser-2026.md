@@ -4,7 +4,7 @@ emoji: "🌐"
 type: "tech"
 topics: ["WebGPU", "WebGL", "3DGS", "ブラウザ", "JavaScript"]
 published: true
-published_at: "2026-01-31 12:00"
+published_at: "2026-02-01 12:00"
 ---
 
 # 結論から言う

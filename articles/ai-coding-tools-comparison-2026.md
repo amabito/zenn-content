@@ -3,7 +3,8 @@ title: "AI開発ツール比較2026：Claude Code vs Cursor vs GitHub Copilot �
 emoji: "🤖"
 type: "tech"
 topics: ["AI", "Claude", "Copilot", "開発環境", "生産性"]
-published: false
+published: true
+published_at: "2026-01-29 18:00"
 ---
 
 # 結論から言う

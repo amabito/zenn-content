@@ -3,7 +3,8 @@ title: "3DGSラスタライザ自作で学んだ設計判断30個：130倍高速
 emoji: "🛠️"
 type: "tech"
 topics: ["3DGS", "CUDA", "GPU", "ラスタライザ", "最適化"]
-published: false
+published: true
+published_at: "2026-01-30 18:00"
 ---
 
 # 結論から言う
