@@ -2,6 +2,14 @@
 """
 Daily Tech Digest - 3DGS/CUDA/AI関連の新着情報を収集しDiscordに通知
 
+情報源:
+  - 日本語テックニュース (Gigazine, ITmedia AI+, Publickey, AI-SCHOLAR)
+  - AI/MLまとめ (Hugging Face Daily Papers, Papers With Code)
+  - Reddit (r/3DGaussianSplatting, r/MachineLearning, r/LocalLLaMA)
+  - YouTube (Two Minute Papers, Yannic Kilcher, 3Blue1Brown)
+  - GitHub Releases (gsplat, nerfstudio等)
+  - Anthropic News
+
 使い方:
   python scripts/daily_tech_digest.py                # 収集 + Discord投稿
   python scripts/daily_tech_digest.py --collect-only  # 収集のみ（stdout出力）
@@ -23,8 +31,6 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any
-from urllib.parse import quote
 
 # Windows stdout エンコーディング対策
 if sys.platform == "win32":
@@ -43,62 +49,62 @@ REPO_ROOT = SCRIPT_DIR.parent
 STATE_FILE = REPO_ROOT / ".digest-state.json"
 
 JST = timezone(timedelta(hours=9))
+USER_AGENT = "TechDigestBot/2.0"
 
-# arXiv検索クエリ
-ARXIV_QUERIES = [
-    '"gaussian splatting"',
-    '"3D Gaussian"',
-    '"radiance field"',
-    '"neural rendering"',
-    '"gaussian surfels"',
-    '"3DGS"',
+# ── 日本語テックニュース RSS ──
+JP_RSS_FEEDS = {
+    "Gigazine": "https://gigazine.net/news/rss_2.0/",
+    "ITmedia AI+": "https://rss.itmedia.co.jp/rss/2.0/aiplus.xml",
+    "Publickey": "https://www.publickey1.jp/atom.xml",
+}
+# 日本語フィードのキーワードフィルタ
+JP_KEYWORDS = [
+    "ai", "gpu", "cuda", "nvidia", "3d", "gaussian", "nerf",
+    "レンダリング", "生成ai", "llm", "claude", "chatgpt", "gemini",
+    "pytorch", "機械学習", "深層学習", "ディープラーニング",
+    "webgpu", "ガウシアン", "点群", "ビジョン",
+    "rtx", "blackwell", "geforce", "自動運転",
 ]
-ARXIV_CATEGORIES = ["cs.CV", "cs.GR"]
-ARXIV_MAX_RESULTS = 50
 
-# GitHub監視対象リポジトリ
+# ── AI/MLまとめ系 ──
+HF_DAILY_PAPERS_URL = "https://huggingface.co/api/daily_papers"
+PAPERS_WITH_CODE_URL = "https://paperswithcode.com/latest"
+
+# ── Reddit ──
+REDDIT_SUBREDDITS = [
+    "3DGaussianSplatting",
+    "MachineLearning",
+    "LocalLLaMA",
+]
+REDDIT_MIN_SCORE = 20  # 最低スコア（ノイズ除去）
+
+# ── YouTube チャンネル ──
+YOUTUBE_CHANNELS = {
+    "Two Minute Papers": "UCbfYPyITQ-7l4upoX8nvctg",
+    "Yannic Kilcher": "UCZHmQk67mSJgfCCTn7xBfew",
+    "3Blue1Brown": "UCYO_jab_esuFRV4b17AJtAw",
+}
+
+# ── GitHub Releases（重要リポジトリのみ）──
 GITHUB_WATCH_REPOS = [
     "nerfstudio-project/gsplat",
     "nerfstudio-project/nerfstudio",
-    "graphdeco-inria/gaussian-splatting",
     "nv-tlabs/ppisp",
-    "autonomousvision/gaussian-opacity-fields",
-    "huggingface/gsplat",
+    "nv-tlabs/3dgrut",
     "pytorch/pytorch",
 ]
 
-# GitHub Trending検索トピック
-GITHUB_TRENDING_TOPICS = [
-    "gaussian-splatting",
-    "3d-gaussian-splatting",
-    "3dgs",
-    "nerf",
-]
-
-# RSSフィード
-RSS_FEEDS = {
-    "NVIDIA Developer Blog": "https://developer.nvidia.com/blog/feed",
-    "PyTorch Blog": "https://pytorch.org/blog/feed.xml",
-}
-
-# RSSキーワードフィルタ（NVIDIAブログ用）
-RSS_KEYWORDS = [
-    "cuda", "gpu", "gaussian", "3d", "splatting", "nerf",
-    "rendering", "blackwell", "rtx", "tensor", "deep learning",
-]
-
-# Anthropic News
+# ── Anthropic News ──
 ANTHROPIC_NEWS_URL = "https://www.anthropic.com/news"
 
-# Discord Embed色
-EMBED_COLOR_ARXIV = 0xB31B1B     # arXiv赤
-EMBED_COLOR_GITHUB = 0x238636    # GitHub緑
-EMBED_COLOR_BLOG = 0x7289DA      # ブログ青
-EMBED_COLOR_SUMMARY = 0xF5A623   # 要約オレンジ
-
-# Discord制限
-DISCORD_FIELD_VALUE_MAX = 1024
-DISCORD_EMBED_TOTAL_MAX = 6000
+# ── Discord Embed色 ──
+EMBED_COLOR_JP = 0xE60033       # 日本語ニュース 赤
+EMBED_COLOR_AI = 0x9B59B6       # AI/MLまとめ 紫
+EMBED_COLOR_REDDIT = 0xFF4500   # Reddit オレンジ
+EMBED_COLOR_YOUTUBE = 0xFF0000  # YouTube 赤
+EMBED_COLOR_GITHUB = 0x238636   # GitHub 緑
+EMBED_COLOR_ANTHROPIC = 0xD4A574  # Anthropic ベージュ
+EMBED_COLOR_SUMMARY = 0xF5A623  # 要約 オレンジ
 
 
 # ──────────────────────────────────────────────
@@ -108,95 +114,216 @@ DISCORD_EMBED_TOTAL_MAX = 6000
 def load_state() -> dict:
     if STATE_FILE.exists():
         return json.loads(STATE_FILE.read_text(encoding="utf-8"))
-    return {
-        "last_run": None,
-        "arxiv_seen": [],
-        "github_releases_seen": [],
-        "github_trending_seen": [],
-        "rss_seen": [],
-        "anthropic_seen": [],
-    }
+    return {"last_run": None}
 
 
 def save_state(state: dict):
     state["last_run"] = datetime.now(JST).isoformat()
-    # 各リストの上限を保持（無限増殖防止）
-    for key in ["arxiv_seen", "github_releases_seen", "github_trending_seen",
-                "rss_seen", "anthropic_seen"]:
-        if key in state and len(state[key]) > 500:
-            state[key] = state[key][-500:]
+    for key, val in state.items():
+        if isinstance(val, list) and len(val) > 500:
+            state[key] = val[-500:]
     STATE_FILE.write_text(
         json.dumps(state, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
 
 
+def _seen_set(state: dict, key: str) -> set:
+    return set(state.get(key, []))
+
+
+def _save_seen(state: dict, key: str, seen: set):
+    state[key] = list(seen)
+
+
 # ──────────────────────────────────────────────
-# arXiv
+# 1. 日本語テックニュース
 # ──────────────────────────────────────────────
 
-def fetch_arxiv(state: dict) -> list[dict]:
-    """arXiv APIから3DGS/NeRF関連の新着論文を取得"""
+def fetch_jp_news(state: dict) -> list[dict]:
+    """日本語テックサイトのRSSから関連ニュースを取得"""
     items = []
-    seen = set(state.get("arxiv_seen", []))
+    seen = _seen_set(state, "jp_seen")
+    cutoff = datetime.now(timezone.utc) - timedelta(days=3)
 
-    cat_query = " OR ".join(f"cat:{c}" for c in ARXIV_CATEGORIES)
-    keyword_query = " OR ".join(f'abs:{q}' for q in ARXIV_QUERIES)
-    query = f"({cat_query}) AND ({keyword_query})"
+    for name, url in JP_RSS_FEEDS.items():
+        try:
+            feed = feedparser.parse(url)
+            for entry in feed.entries[:30]:
+                entry_id = entry.get("link", entry.get("id", ""))
+                if not entry_id or entry_id in seen:
+                    continue
 
-    url = "http://export.arxiv.org/api/query"
-    params = {
-        "search_query": query,
-        "start": 0,
-        "max_results": ARXIV_MAX_RESULTS,
-        "sortBy": "submittedDate",
-        "sortOrder": "descending",
-    }
+                if hasattr(entry, "published_parsed") and entry.published_parsed:
+                    pub = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+                    if pub < cutoff:
+                        continue
 
-    try:
-        resp = requests.get(url, params=params, timeout=30)
-        resp.raise_for_status()
-        feed = feedparser.parse(resp.content)
+                title = re.sub(r"<[^>]+>", "", entry.get("title", "")).strip()
+                summary = re.sub(r"<[^>]+>", "", entry.get("summary", "")[:300]).strip()
 
-        cutoff = datetime.now(timezone.utc) - timedelta(days=3)
+                text_lower = (title + " " + summary).lower()
+                if not any(kw in text_lower for kw in JP_KEYWORDS):
+                    continue
 
-        for entry in feed.entries:
-            arxiv_id = entry.id.split("/abs/")[-1].split("v")[0]
-            if arxiv_id in seen:
-                continue
+                items.append({
+                    "source": "jp_news",
+                    "id": entry_id,
+                    "feed_name": name,
+                    "title": title,
+                    "url": entry_id,
+                    "summary": summary[:150],
+                })
+                seen.add(entry_id)
+        except Exception as e:
+            print(f"[JP News] {name}: {e}", file=sys.stderr)
 
-            published = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-            if published < cutoff:
-                continue
-
-            authors = ", ".join(a.get("name", "") for a in entry.get("authors", [])[:3])
-            if len(entry.get("authors", [])) > 3:
-                authors += " et al."
-
-            items.append({
-                "source": "arxiv",
-                "id": arxiv_id,
-                "title": entry.title.replace("\n", " ").strip(),
-                "authors": authors,
-                "url": f"https://arxiv.org/abs/{arxiv_id}",
-                "summary": entry.summary[:300].replace("\n", " ").strip(),
-                "date": published.isoformat(),
-            })
-            seen.add(arxiv_id)
-
-    except Exception as e:
-        print(f"[arXiv] エラー: {e}", file=sys.stderr)
-
-    state["arxiv_seen"] = list(seen)
+    _save_seen(state, "jp_seen", seen)
     return items
 
 
 # ──────────────────────────────────────────────
-# GitHub Releases
+# 2. AI/MLまとめ系
+# ──────────────────────────────────────────────
+
+def fetch_hf_daily_papers(state: dict) -> list[dict]:
+    """Hugging Face Daily Papersから注目論文を取得"""
+    items = []
+    seen = _seen_set(state, "hf_seen")
+
+    try:
+        resp = requests.get(HF_DAILY_PAPERS_URL, timeout=15,
+                            headers={"User-Agent": USER_AGENT})
+        resp.raise_for_status()
+        papers = resp.json()
+
+        for paper in papers[:20]:
+            paper_data = paper.get("paper", {})
+            paper_id = paper_data.get("id", "")
+            if not paper_id or paper_id in seen:
+                continue
+
+            title = paper_data.get("title", "").replace("\n", " ").strip()
+            summary = paper_data.get("summary", "")[:200].replace("\n", " ").strip()
+            upvotes = paper.get("numUpvotes", 0)
+
+            items.append({
+                "source": "hf_papers",
+                "id": paper_id,
+                "title": title,
+                "url": f"https://huggingface.co/papers/{paper_id}",
+                "summary": summary,
+                "upvotes": upvotes,
+            })
+            seen.add(paper_id)
+    except Exception as e:
+        print(f"[HF Papers] エラー: {e}", file=sys.stderr)
+
+    _save_seen(state, "hf_seen", seen)
+    return items
+
+
+# ──────────────────────────────────────────────
+# 3. Reddit
+# ──────────────────────────────────────────────
+
+def fetch_reddit(state: dict) -> list[dict]:
+    """Redditの関連サブレディットからホットな投稿を取得"""
+    items = []
+    seen = _seen_set(state, "reddit_seen")
+
+    for subreddit in REDDIT_SUBREDDITS:
+        try:
+            url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=15"
+            resp = requests.get(url, timeout=15, headers={"User-Agent": USER_AGENT})
+            resp.raise_for_status()
+            data = resp.json()
+
+            for post in data.get("data", {}).get("children", []):
+                pdata = post.get("data", {})
+                post_id = pdata.get("id", "")
+                if not post_id or post_id in seen:
+                    continue
+
+                score = pdata.get("score", 0)
+                if score < REDDIT_MIN_SCORE:
+                    continue
+
+                # stickied投稿はスキップ
+                if pdata.get("stickied"):
+                    continue
+
+                title = pdata.get("title", "").strip()
+                permalink = pdata.get("permalink", "")
+
+                items.append({
+                    "source": "reddit",
+                    "id": post_id,
+                    "subreddit": subreddit,
+                    "title": title,
+                    "url": f"https://reddit.com{permalink}" if permalink else "",
+                    "score": score,
+                    "comments": pdata.get("num_comments", 0),
+                })
+                seen.add(post_id)
+
+            time.sleep(1)
+        except Exception as e:
+            print(f"[Reddit] r/{subreddit}: {e}", file=sys.stderr)
+
+    _save_seen(state, "reddit_seen", seen)
+    return items
+
+
+# ──────────────────────────────────────────────
+# 4. YouTube
+# ──────────────────────────────────────────────
+
+def fetch_youtube(state: dict) -> list[dict]:
+    """YouTubeチャンネルの最新動画を取得（Atom RSS）"""
+    items = []
+    seen = _seen_set(state, "youtube_seen")
+    cutoff = datetime.now(timezone.utc) - timedelta(days=7)
+
+    for channel_name, channel_id in YOUTUBE_CHANNELS.items():
+        try:
+            url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+            feed = feedparser.parse(url)
+
+            for entry in feed.entries[:5]:
+                video_id = entry.get("yt_videoid", entry.get("id", ""))
+                if not video_id or video_id in seen:
+                    continue
+
+                if hasattr(entry, "published_parsed") and entry.published_parsed:
+                    pub = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+                    if pub < cutoff:
+                        continue
+
+                title = entry.get("title", "").strip()
+                link = entry.get("link", "")
+
+                items.append({
+                    "source": "youtube",
+                    "id": video_id,
+                    "channel": channel_name,
+                    "title": title,
+                    "url": link,
+                })
+                seen.add(video_id)
+        except Exception as e:
+            print(f"[YouTube] {channel_name}: {e}", file=sys.stderr)
+
+    _save_seen(state, "youtube_seen", seen)
+    return items
+
+
+# ──────────────────────────────────────────────
+# 5. GitHub Releases（重要リポジトリのみ）
 # ──────────────────────────────────────────────
 
 def _github_headers() -> dict:
-    headers = {"Accept": "application/vnd.github+json"}
+    headers = {"Accept": "application/vnd.github+json", "User-Agent": USER_AGENT}
     token = os.environ.get("GITHUB_TOKEN")
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -206,17 +333,15 @@ def _github_headers() -> dict:
 def fetch_github_releases(state: dict) -> list[dict]:
     """監視対象リポジトリの新しいリリースを取得"""
     items = []
-    seen = set(state.get("github_releases_seen", []))
+    seen = _seen_set(state, "github_releases_seen")
     headers = _github_headers()
-    cutoff = datetime.now(timezone.utc) - timedelta(days=3)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=7)
 
     for repo in GITHUB_WATCH_REPOS:
         try:
             resp = requests.get(
                 f"https://api.github.com/repos/{repo}/releases",
-                headers=headers,
-                params={"per_page": 5},
-                timeout=15,
+                headers=headers, params={"per_page": 3}, timeout=15,
             )
             if resp.status_code == 404:
                 continue
@@ -227,173 +352,59 @@ def fetch_github_releases(state: dict) -> list[dict]:
                 if release_id in seen:
                     continue
 
-                published = datetime.fromisoformat(
+                pub = datetime.fromisoformat(
                     release["published_at"].replace("Z", "+00:00")
                 )
-                if published < cutoff:
+                if pub < cutoff:
                     continue
 
-                body = release.get("body", "") or ""
-                body_short = body[:200].replace("\n", " ").strip()
-
+                body = (release.get("body") or "")[:200].replace("\n", " ").strip()
                 items.append({
                     "source": "github_release",
                     "id": release_id,
                     "title": f"{repo.split('/')[-1]} {release['tag_name']}",
                     "repo": repo,
-                    "tag": release["tag_name"],
                     "url": release["html_url"],
-                    "summary": body_short,
-                    "date": published.isoformat(),
+                    "summary": body,
                 })
                 seen.add(release_id)
 
             time.sleep(0.5)
         except Exception as e:
-            print(f"[GitHub Release] {repo}: {e}", file=sys.stderr)
+            print(f"[GitHub] {repo}: {e}", file=sys.stderr)
 
-    state["github_releases_seen"] = list(seen)
+    _save_seen(state, "github_releases_seen", seen)
     return items
 
 
 # ──────────────────────────────────────────────
-# GitHub Trending (Search API)
-# ──────────────────────────────────────────────
-
-def fetch_github_trending(state: dict) -> list[dict]:
-    """GitHub Search APIでトレンドリポジトリを検索"""
-    items = []
-    seen = set(state.get("github_trending_seen", []))
-    headers = _github_headers()
-
-    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%d")
-
-    for topic in GITHUB_TRENDING_TOPICS:
-        query = f"topic:{topic} pushed:>{week_ago} stars:>5"
-        try:
-            resp = requests.get(
-                "https://api.github.com/search/repositories",
-                headers=headers,
-                params={"q": query, "sort": "stars", "order": "desc", "per_page": 10},
-                timeout=15,
-            )
-            resp.raise_for_status()
-
-            for repo in resp.json().get("items", []):
-                repo_id = repo["full_name"]
-                if repo_id in seen:
-                    continue
-
-                items.append({
-                    "source": "github_trending",
-                    "id": repo_id,
-                    "title": repo["full_name"],
-                    "url": repo["html_url"],
-                    "summary": (repo.get("description") or "")[:200],
-                    "stars": repo["stargazers_count"],
-                    "date": repo.get("pushed_at", ""),
-                })
-                seen.add(repo_id)
-
-            time.sleep(1)
-        except Exception as e:
-            print(f"[GitHub Trending] {topic}: {e}", file=sys.stderr)
-
-    state["github_trending_seen"] = list(seen)
-    return items
-
-
-# ──────────────────────────────────────────────
-# RSS Feeds
-# ──────────────────────────────────────────────
-
-def fetch_rss_feeds(state: dict) -> list[dict]:
-    """NVIDIA/PyTorchブログのRSSフィードを取得"""
-    items = []
-    seen = set(state.get("rss_seen", []))
-    cutoff = datetime.now(timezone.utc) - timedelta(days=7)
-
-    for name, url in RSS_FEEDS.items():
-        try:
-            feed = feedparser.parse(url)
-            for entry in feed.entries[:20]:
-                entry_id = entry.get("link", entry.get("id", ""))
-                if not entry_id or entry_id in seen:
-                    continue
-
-                if hasattr(entry, "published_parsed") and entry.published_parsed:
-                    published = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-                    if published < cutoff:
-                        continue
-                elif hasattr(entry, "updated_parsed") and entry.updated_parsed:
-                    updated = datetime(*entry.updated_parsed[:6], tzinfo=timezone.utc)
-                    if updated < cutoff:
-                        continue
-
-                title = entry.get("title", "").strip()
-                summary = entry.get("summary", "")[:200].strip()
-
-                # HTMLタグ除去
-                title = re.sub(r"<[^>]+>", "", title)
-                summary = re.sub(r"<[^>]+>", "", summary).strip()
-
-                # NVIDIAブログはキーワードフィルタ
-                if "nvidia" in name.lower():
-                    text_lower = (title + " " + summary).lower()
-                    if not any(kw in text_lower for kw in RSS_KEYWORDS):
-                        continue
-
-                items.append({
-                    "source": "rss",
-                    "id": entry_id,
-                    "feed_name": name,
-                    "title": title,
-                    "url": entry_id,
-                    "summary": summary,
-                    "date": entry.get("published", entry.get("updated", "")),
-                })
-                seen.add(entry_id)
-
-        except Exception as e:
-            print(f"[RSS] {name}: {e}", file=sys.stderr)
-
-    state["rss_seen"] = list(seen)
-    return items
-
-
-# ──────────────────────────────────────────────
-# Anthropic News
+# 6. Anthropic News
 # ──────────────────────────────────────────────
 
 def fetch_anthropic_news(state: dict) -> list[dict]:
-    """Anthropicニュースページから新着記事を取得（簡易HTML解析）"""
+    """Anthropicニュースページから新着記事を取得"""
     items = []
-    seen = set(state.get("anthropic_seen", []))
+    seen = _seen_set(state, "anthropic_seen")
 
     try:
-        resp = requests.get(ANTHROPIC_NEWS_URL, timeout=15, headers={
-            "User-Agent": "TechDigestBot/1.0"
-        })
+        resp = requests.get(ANTHROPIC_NEWS_URL, timeout=15,
+                            headers={"User-Agent": USER_AGENT})
         resp.raise_for_status()
         html = resp.text
 
-        # <a href="/news/..." のリンクを抽出
         pattern = r'<a[^>]*href="(/news/[^"]+)"[^>]*>(.*?)</a>'
         matches = re.findall(pattern, html, re.DOTALL)
 
-        for path, title_html in matches[:20]:
+        for path, title_html in matches[:15]:
             url = f"https://www.anthropic.com{path}"
             if url in seen:
                 continue
 
-            # HTMLタグ・HTMLエンティティ除去
             raw_title = re.sub(r"<[^>]+>", "", title_html).strip()
             raw_title = raw_title.replace("&#x27;", "'").replace("&amp;", "&")
             if not raw_title or len(raw_title) < 5:
                 continue
 
-            # Anthropicページは日付・カテゴリ・タイトル・説明が混在
-            # 複数回パスで除去
             cleaned = raw_title
             _labels = ["Announcements", "Product", "Policy", "Research",
                        "Case Study", "Company"]
@@ -403,14 +414,10 @@ def fetch_anthropic_news(state: dict) -> list[dict]:
                 for label in _labels:
                     if cleaned.startswith(label):
                         cleaned = cleaned[len(label):].strip()
-                    # 末尾にも出現する場合
                     if cleaned.endswith(label):
                         cleaned = cleaned[:-len(label)].strip()
 
-            # 説明文が連結されている場合、最初の文（〜150文字）を取得
-            # 大文字から始まる長い文が2つ以上連結している場合を検出
             if len(cleaned) > 100:
-                # タイトルの切れ目を推定（小文字/数字の後に大文字 → 連結点）
                 split_match = re.search(r'[a-z0-9][A-Z]', cleaned)
                 if split_match:
                     title = cleaned[:split_match.start() + 1]
@@ -427,21 +434,29 @@ def fetch_anthropic_news(state: dict) -> list[dict]:
                 "id": url,
                 "title": title[:150],
                 "url": url,
-                "summary": "",
-                "date": "",
             })
             seen.add(url)
 
     except Exception as e:
         print(f"[Anthropic] エラー: {e}", file=sys.stderr)
 
-    state["anthropic_seen"] = list(seen)
+    _save_seen(state, "anthropic_seen", seen)
     return items
 
 
 # ──────────────────────────────────────────────
 # フォーマット
 # ──────────────────────────────────────────────
+
+SOURCE_LABELS = {
+    "jp_news": "日本語テックニュース",
+    "hf_papers": "AI/ML注目論文",
+    "reddit": "Reddit",
+    "youtube": "YouTube",
+    "github_release": "GitHub リリース",
+    "anthropic": "Anthropic",
+}
+
 
 def format_raw(items: list[dict]) -> str:
     """収集結果をテキスト形式で出力"""
@@ -451,26 +466,25 @@ def format_raw(items: list[dict]) -> str:
     for item in items:
         by_source.setdefault(item["source"], []).append(item)
 
-    source_labels = {
-        "arxiv": "arXiv 新着論文",
-        "github_release": "GitHub リリース",
-        "github_trending": "GitHub トレンド",
-        "rss": "ブログ・ニュース",
-        "anthropic": "Anthropic ニュース",
-    }
-
-    for source, label in source_labels.items():
+    for source, label in SOURCE_LABELS.items():
         source_items = by_source.get(source, [])
         if not source_items:
             continue
         lines.append(f"\n--- {label} ({len(source_items)}件) ---\n")
         for item in source_items:
-            lines.append(f"  [{item['title']}]")
-            lines.append(f"  {item['url']}")
-            if item.get("authors"):
-                lines.append(f"  著者: {item['authors']}")
-            if item.get("stars"):
-                lines.append(f"  Stars: {item['stars']}")
+            title = item["title"]
+            if item.get("feed_name"):
+                title = f"[{item['feed_name']}] {title}"
+            if item.get("channel"):
+                title = f"[{item['channel']}] {title}"
+            if item.get("subreddit"):
+                title = f"r/{item['subreddit']}: {title}"
+            lines.append(f"  {title}")
+            lines.append(f"  {item.get('url', '')}")
+            if item.get("score"):
+                lines.append(f"  Score: {item['score']}")
+            if item.get("upvotes"):
+                lines.append(f"  Upvotes: {item['upvotes']}")
             if item.get("summary"):
                 lines.append(f"  概要: {item['summary'][:150]}")
             lines.append("")
@@ -487,18 +501,16 @@ def call_claude_cli(raw_text: str) -> str:
     """claude CLIで要約を生成"""
     prompt = (
         "以下のテック情報ダイジェストを日本語で簡潔に要約してください。\n"
-        "各セクション（arXiv、GitHub、ブログ）ごとに注目ポイントを1-2行で。\n"
+        "各セクションごとに注目ポイントを1-2行で。\n"
+        "英語タイトルは日本語に意訳してください。\n"
         "最後に「今日の注目」として最も重要な1件を選んでください。\n"
-        "200文字以内で。\n\n"
+        "300文字以内で。\n\n"
         f"{raw_text}"
     )
     try:
         result = subprocess.run(
             ["claude", "-p", prompt],
-            capture_output=True,
-            text=True,
-            timeout=120,
-            encoding="utf-8",
+            capture_output=True, text=True, timeout=120, encoding="utf-8",
         )
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
@@ -528,70 +540,89 @@ def _truncate(text: str, max_len: int) -> str:
 def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
     """Discord Embed形式のペイロードを構築"""
     embeds = []
-    today = datetime.now(JST).strftime("%Y/%m/%d")
 
     by_source = {}
     for item in items:
         by_source.setdefault(item["source"], []).append(item)
 
-    # arXiv
-    arxiv_items = by_source.get("arxiv", [])
-    if arxiv_items:
+    # 日本語ニュース
+    jp_items = by_source.get("jp_news", [])
+    if jp_items:
         lines = []
-        for item in arxiv_items[:8]:
-            line = f"**[{item['title'][:80]}]({item['url']})**"
-            if item.get("authors"):
-                line += f"\n{item['authors']}"
-            lines.append(line)
+        for item in jp_items[:6]:
+            name = item.get("feed_name", "")
+            lines.append(f"**[{name}] [{item['title'][:70]}]({item['url']})**")
         embeds.append({
-            "title": f"📄 arXiv 新着論文 ({len(arxiv_items)}件)",
-            "description": _truncate("\n\n".join(lines), 2048),
-            "color": EMBED_COLOR_ARXIV,
+            "title": f"🇯🇵 日本語テックニュース ({len(jp_items)}件)",
+            "description": _truncate("\n".join(lines), 2048),
+            "color": EMBED_COLOR_JP,
+        })
+
+    # AI/ML Papers
+    hf_items = by_source.get("hf_papers", [])
+    if hf_items:
+        lines = []
+        for item in hf_items[:6]:
+            votes = f" 👍{item['upvotes']}" if item.get("upvotes") else ""
+            lines.append(f"**[{item['title'][:70]}]({item['url']})**{votes}")
+        embeds.append({
+            "title": f"🧠 AI/ML注目論文 ({len(hf_items)}件)",
+            "description": _truncate("\n".join(lines), 2048),
+            "color": EMBED_COLOR_AI,
+        })
+
+    # Reddit
+    reddit_items = by_source.get("reddit", [])
+    if reddit_items:
+        lines = []
+        for item in reddit_items[:6]:
+            sr = item.get("subreddit", "")
+            score = f" ⬆{item['score']}" if item.get("score") else ""
+            lines.append(f"**r/{sr}**: [{item['title'][:60]}]({item['url']}){score}")
+        embeds.append({
+            "title": f"💬 Reddit ({len(reddit_items)}件)",
+            "description": _truncate("\n".join(lines), 2048),
+            "color": EMBED_COLOR_REDDIT,
+        })
+
+    # YouTube
+    yt_items = by_source.get("youtube", [])
+    if yt_items:
+        lines = []
+        for item in yt_items[:5]:
+            ch = item.get("channel", "")
+            lines.append(f"**[{ch}]** [{item['title'][:60]}]({item['url']})")
+        embeds.append({
+            "title": f"▶️ YouTube ({len(yt_items)}件)",
+            "description": _truncate("\n".join(lines), 2048),
+            "color": EMBED_COLOR_YOUTUBE,
         })
 
     # GitHub Releases
-    gh_releases = by_source.get("github_release", [])
-    if gh_releases:
+    gh_items = by_source.get("github_release", [])
+    if gh_items:
         lines = []
-        for item in gh_releases[:5]:
+        for item in gh_items[:5]:
             line = f"**[{item['title']}]({item['url']})**"
             if item.get("summary"):
-                line += f"\n{item['summary'][:100]}"
+                line += f"\n{item['summary'][:80]}"
             lines.append(line)
         embeds.append({
-            "title": f"🏷️ GitHub リリース ({len(gh_releases)}件)",
+            "title": f"🏷️ GitHub リリース ({len(gh_items)}件)",
             "description": _truncate("\n\n".join(lines), 2048),
             "color": EMBED_COLOR_GITHUB,
         })
 
-    # GitHub Trending
-    gh_trending = by_source.get("github_trending", [])
-    if gh_trending:
+    # Anthropic
+    anth_items = by_source.get("anthropic", [])
+    if anth_items:
         lines = []
-        for item in gh_trending[:5]:
-            stars = f" ⭐{item['stars']}" if item.get("stars") else ""
-            line = f"**[{item['title']}]({item['url']})**{stars}"
-            if item.get("summary"):
-                line += f"\n{item['summary'][:100]}"
-            lines.append(line)
+        for item in anth_items[:4]:
+            lines.append(f"**[{item['title'][:70]}]({item['url']})**")
         embeds.append({
-            "title": f"🔥 GitHub トレンド ({len(gh_trending)}件)",
-            "description": _truncate("\n\n".join(lines), 2048),
-            "color": EMBED_COLOR_GITHUB,
-        })
-
-    # RSS + Anthropic
-    blog_items = by_source.get("rss", []) + by_source.get("anthropic", [])
-    if blog_items:
-        lines = []
-        for item in blog_items[:5]:
-            prefix = item.get("feed_name", "Anthropic")
-            line = f"**[{prefix}: {item['title'][:60]}]({item['url']})**"
-            lines.append(line)
-        embeds.append({
-            "title": f"📰 ブログ・ニュース ({len(blog_items)}件)",
-            "description": _truncate("\n\n".join(lines), 2048),
-            "color": EMBED_COLOR_BLOG,
+            "title": f"🤖 Anthropic ({len(anth_items)}件)",
+            "description": _truncate("\n".join(lines), 2048),
+            "color": EMBED_COLOR_ANTHROPIC,
         })
 
     # AI要約
@@ -602,8 +633,9 @@ def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
             "color": EMBED_COLOR_SUMMARY,
         })
 
-    # フッター（最後のembedに付与）
+    # フッター
     if embeds:
+        today = datetime.now(JST).strftime("%Y/%m/%d")
         embeds[-1]["footer"] = {
             "text": f"Daily Tech Digest | {today} | powered by Claude Code"
         }
@@ -626,7 +658,7 @@ def post_to_discord(items: list[dict], summary: str):
     payload = {
         "username": "Tech Digest Bot",
         "content": f"🔬 **テックダイジェスト {today}** — {len(items)}件の新着情報",
-        "embeds": embeds[:10],  # Discord上限: 10 embeds
+        "embeds": embeds[:10],
     }
 
     try:
@@ -654,6 +686,16 @@ def parse_args():
     return parser.parse_args()
 
 
+FETCH_STEPS = [
+    ("日本語テックニュース", fetch_jp_news),
+    ("HF Daily Papers", fetch_hf_daily_papers),
+    ("Reddit", fetch_reddit),
+    ("YouTube", fetch_youtube),
+    ("GitHub Releases", fetch_github_releases),
+    ("Anthropic News", fetch_anthropic_news),
+]
+
+
 def main():
     args = parse_args()
     state = load_state()
@@ -662,23 +704,11 @@ def main():
     if state.get("last_run"):
         print(f"[Digest] 前回実行: {state['last_run']}")
 
-    # 1. 各ソースから新着を収集
     items: list[dict] = []
-
-    print("[1/5] arXiv...")
-    items += fetch_arxiv(state)
-
-    print("[2/5] GitHub Releases...")
-    items += fetch_github_releases(state)
-
-    print("[3/5] GitHub Trending...")
-    items += fetch_github_trending(state)
-
-    print("[4/5] RSS Feeds...")
-    items += fetch_rss_feeds(state)
-
-    print("[5/5] Anthropic News...")
-    items += fetch_anthropic_news(state)
+    total = len(FETCH_STEPS)
+    for i, (label, func) in enumerate(FETCH_STEPS, 1):
+        print(f"[{i}/{total}] {label}...")
+        items += func(state)
 
     print(f"\n収集完了: {len(items)}件の新着")
 
@@ -687,7 +717,6 @@ def main():
         save_state(state)
         return
 
-    # 2. テキスト出力
     raw_text = format_raw(items)
     print(raw_text)
 
@@ -695,7 +724,6 @@ def main():
         save_state(state)
         return
 
-    # 3. 要約
     summary = ""
     if args.auto_summarize:
         print("\n[Claude CLI] 要約生成中...")
@@ -703,7 +731,6 @@ def main():
         if summary:
             print(f"[Claude CLI] 要約:\n{summary}")
 
-    # 4. Discord投稿
     if args.dry_run:
         print("\n[dry-run] Discord投稿をスキップ")
         embeds = build_discord_embeds(items, summary)
