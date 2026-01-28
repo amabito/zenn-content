@@ -125,10 +125,24 @@ def post_tweet(text: str) -> bool:
         access_token_secret=access_token_secret,
     )
 
-    response = client.create_tweet(text=text)
-    tweet_id = response.data["id"]
-    print(f"  -> https://twitter.com/i/status/{tweet_id}")
-    return True
+    try:
+        response = client.create_tweet(text=text)
+        tweet_id = response.data["id"]
+        print(f"  -> https://twitter.com/i/status/{tweet_id}")
+        return True
+    except tweepy.errors.Unauthorized as e:
+        print(f"  ERROR 401: {e}")
+        print(f"  API Key starts with: {api_key[:6]}...")
+        print(f"  Access Token starts with: {access_token[:6]}...")
+        print("  -> Consumer KeyとAccess Tokenを全て再生成してください")
+        return False
+    except tweepy.errors.Forbidden as e:
+        print(f"  ERROR 403: {e}")
+        print("  -> アプリの権限が「読み取りと書き込み」になっているか確認")
+        return False
+    except Exception as e:
+        print(f"  ERROR: {type(e).__name__}: {e}")
+        return False
 
 
 def main():
