@@ -5,16 +5,19 @@
 3dgs-custom-rasterizer-lessons
 3dgs-image-preprocessing-paid
 3dgs-pipeline-photos-to-web
+3dgs-production-deploy-2026
 3dgs-rasterizer-comparison
 3dgs-streaming
 ai-engineer-skillmap-2026
 autonomous-driving-3dgs-sim
+claude-agent-sdk-custom-tools
 claude-code-automation-workflow
 claude-code-hooks-automation
 claude-code-mcp-intro
 claude-code-monitor-overlay
 claude-code-productivity
 claude-code-productivity-paid
+claude-code-vs-copilot-2026
 construction-3dgs
 construction-3dgs-paid
 construction-consultant-business-model
@@ -23,6 +26,7 @@ construction-consultant-reality-paid
 construction-consultant-salary
 construction-dx-failure
 construction-value-chain
+cuda-128-blackwell-complete
 cuda-memory-management
 cuda-memory-management-paid
 cuda-optimization-basics
@@ -39,6 +43,7 @@ engineer-salary-1000man-paid
 entertainment-3dgs-gaming
 gpu-programming-intro
 gpu-programming-paid
+gsplat-3dgut-fisheye-camera
 hyper-rasterizer-impl-paid
 hyper-rasterizer-training
 hyper-rasterizer-zenn
@@ -54,6 +59,8 @@ manufacturing-3dgs-paid
 medical-3dgs
 nerf-now-2026
 nerf-vs-3dgs-2026
+nvidia-ppisp-3dgs-photometric
+pytorch-210-cuda-blackwell
 pytorch-cuda-extension
 pytorch-cuda-extension-paid
 realestate-3dgs
@@ -64,5 +71,7 @@ rtx5090-sm120-migration-guide
 rtx5090-vs-rtx4090
 small-construction-survival
 tech-career-2026
+torch-compile-3dgs-training
+webgpu-cross-browser-2026
 webgpu-vs-webgl
 windows-cuda-pytorch-setup-2026
