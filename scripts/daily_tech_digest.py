@@ -26,6 +26,7 @@ import io
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -472,7 +473,7 @@ def format_raw(items: list[dict]) -> str:
             continue
         lines.append(f"\n--- {label} ({len(source_items)}件) ---\n")
         for item in source_items:
-            title = item["title"]
+            title = item.get("title_ja") or item["title"]
             if item.get("feed_name"):
                 title = f"[{item['feed_name']}] {title}"
             if item.get("channel"):
@@ -497,6 +498,74 @@ def format_raw(items: list[dict]) -> str:
 # Claude CLI要約
 # ──────────────────────────────────────────────
 
+def translate_english_items(items: list[dict]):
+    """英語アイテムのタイトルをClaude CLIで日本語翻訳（in-place更新）"""
+    english_sources = {"hf_papers", "reddit", "youtube", "github_release", "anthropic"}
+    en_items = [
+        (i, item) for i, item in enumerate(items)
+        if item["source"] in english_sources and item.get("title")
+    ]
+    if not en_items:
+        return
+
+    lines = [f"{idx}: {item['title'][:120]}" for idx, (_, item) in enumerate(en_items, 1)]
+    prompt = (
+        "Translate these English tech article titles to Japanese. "
+        "Keep proper nouns and tech terms (3DGS, CUDA, LLM, PyTorch, Claude etc.) as-is. "
+        "Output ONLY numbered translations, no explanations.\n\n"
+        + "\n".join(lines)
+    )
+
+    claude_cmd = shutil.which("claude")
+    if not claude_cmd:
+        print("[翻訳] claude コマンドが見つかりません", file=sys.stderr)
+        return
+
+    print(f"[翻訳] {len(en_items)}件の英語タイトルを日本語化中...")
+    try:
+        # Windowsではコマンドライン引数に改行を含められないため、
+        # 一時ファイル経由で渡す
+        import tempfile
+        prompt_file = Path(tempfile.gettempdir()) / "digest_translate_prompt.txt"
+        prompt_file.write_text(prompt, encoding="utf-8")
+
+        # shell=True でファイル内容をclaude -pに渡す
+        if sys.platform == "win32":
+            shell_cmd = f'chcp 65001 >nul && "{claude_cmd}" -p < "{prompt_file}"'
+        else:
+            shell_cmd = f'"{claude_cmd}" -p < "{prompt_file}"'
+
+        result = subprocess.run(
+            shell_cmd, capture_output=True, timeout=180, shell=True,
+        )
+        prompt_file.unlink(missing_ok=True)
+
+        if result.returncode != 0 or not result.stdout.strip():
+            print("[翻訳] Claude CLI失敗、原文のまま出力", file=sys.stderr)
+            return
+
+        output = result.stdout.decode("utf-8", errors="replace")
+        translations = {}
+        for line in output.strip().split("\n"):
+            m = re.match(r"(\d+)\s*[:：．.\)）\-\>→]\s*(.+)", line.strip())
+            if m:
+                translations[int(m.group(1))] = m.group(2).strip()
+
+        applied = 0
+        for idx, (i, _) in enumerate(en_items, 1):
+            if idx in translations:
+                items[i]["title_ja"] = translations[idx]
+                applied += 1
+
+        print(f"[翻訳] {applied}/{len(en_items)}件を翻訳完了")
+    except FileNotFoundError:
+        print("[翻訳] claude コマンドが見つかりません", file=sys.stderr)
+    except subprocess.TimeoutExpired:
+        print("[翻訳] タイムアウト（原文のまま出力）", file=sys.stderr)
+    except Exception as e:
+        print(f"[翻訳] エラー: {e}", file=sys.stderr)
+
+
 def call_claude_cli(raw_text: str) -> str:
     """claude CLIで要約を生成"""
     prompt = (
@@ -507,13 +576,18 @@ def call_claude_cli(raw_text: str) -> str:
         "300文字以内で。\n\n"
         f"{raw_text}"
     )
+    claude_cmd = shutil.which("claude")
+    if not claude_cmd:
+        print("[Claude CLI] claude コマンドが見つかりません", file=sys.stderr)
+        return ""
     try:
         result = subprocess.run(
-            ["claude", "-p", prompt],
-            capture_output=True, text=True, timeout=120, encoding="utf-8",
+            [claude_cmd, "-p", prompt],
+            capture_output=True, timeout=120,
         )
-        if result.returncode == 0 and result.stdout.strip():
-            return result.stdout.strip()
+        output = result.stdout.decode("utf-8", errors="replace")
+        if result.returncode == 0 and output.strip():
+            return output.strip()
         print(f"[Claude CLI] 戻り値: {result.returncode}", file=sys.stderr)
         if result.stderr:
             print(f"[Claude CLI] stderr: {result.stderr[:200]}", file=sys.stderr)
@@ -564,7 +638,8 @@ def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
         lines = []
         for item in hf_items[:6]:
             votes = f" 👍{item['upvotes']}" if item.get("upvotes") else ""
-            lines.append(f"**[{item['title'][:70]}]({item['url']})**{votes}")
+            t = (item.get("title_ja") or item["title"])[:70]
+            lines.append(f"**[{t}]({item['url']})**{votes}")
         embeds.append({
             "title": f"🧠 AI/ML注目論文 ({len(hf_items)}件)",
             "description": _truncate("\n".join(lines), 2048),
@@ -578,7 +653,8 @@ def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
         for item in reddit_items[:6]:
             sr = item.get("subreddit", "")
             score = f" ⬆{item['score']}" if item.get("score") else ""
-            lines.append(f"**r/{sr}**: [{item['title'][:60]}]({item['url']}){score}")
+            t = (item.get("title_ja") or item["title"])[:60]
+            lines.append(f"**r/{sr}**: [{t}]({item['url']}){score}")
         embeds.append({
             "title": f"💬 Reddit ({len(reddit_items)}件)",
             "description": _truncate("\n".join(lines), 2048),
@@ -591,7 +667,8 @@ def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
         lines = []
         for item in yt_items[:5]:
             ch = item.get("channel", "")
-            lines.append(f"**[{ch}]** [{item['title'][:60]}]({item['url']})")
+            t = (item.get("title_ja") or item["title"])[:60]
+            lines.append(f"**[{ch}]** [{t}]({item['url']})")
         embeds.append({
             "title": f"▶️ YouTube ({len(yt_items)}件)",
             "description": _truncate("\n".join(lines), 2048),
@@ -603,7 +680,8 @@ def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
     if gh_items:
         lines = []
         for item in gh_items[:5]:
-            line = f"**[{item['title']}]({item['url']})**"
+            t = item.get("title_ja") or item["title"]
+            line = f"**[{t}]({item['url']})**"
             if item.get("summary"):
                 line += f"\n{item['summary'][:80]}"
             lines.append(line)
@@ -618,7 +696,8 @@ def build_discord_embeds(items: list[dict], summary: str) -> list[dict]:
     if anth_items:
         lines = []
         for item in anth_items[:4]:
-            lines.append(f"**[{item['title'][:70]}]({item['url']})**")
+            t = (item.get("title_ja") or item["title"])[:70]
+            lines.append(f"**[{t}]({item['url']})**")
         embeds.append({
             "title": f"🤖 Anthropic ({len(anth_items)}件)",
             "description": _truncate("\n".join(lines), 2048),
@@ -683,6 +762,8 @@ def parse_args():
                         help="claude CLIで自動要約")
     parser.add_argument("--dry-run", action="store_true",
                         help="Discord投稿をスキップ")
+    parser.add_argument("--no-translate", action="store_true",
+                        help="英語→日本語翻訳をスキップ")
     return parser.parse_args()
 
 
@@ -716,6 +797,10 @@ def main():
         print("新着情報なし")
         save_state(state)
         return
+
+    # 英語タイトルを日本語に翻訳
+    if not args.no_translate and not args.collect_only:
+        translate_english_items(items)
 
     raw_text = format_raw(items)
     print(raw_text)
