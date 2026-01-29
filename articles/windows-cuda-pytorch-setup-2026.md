@@ -101,7 +101,7 @@ cl
 ```
 
 :::message alert
-**MSVCバージョン管理が重要。** v14.44を使うこと。これより新しいバージョンではPyTorch 2.8.0のCUDA拡張ビルドで問題が発生する場合がある。Visual Studio Installerで特定バージョンを選択できる。
+**MSVCバージョン管理が重要。** v14.44を使うこと。v14.45以降ではPyTorch 2.8.0のCUDA拡張ビルド時に`error C2660`（テンプレート引数の不一致）や`warning C4819`（文字コード問題）が発生する。Visual Studio Installerで特定バージョン（v14.44）を選択できる。
 :::
 
 ---
@@ -253,23 +253,52 @@ sm_120を指定しないとsm_89向けコードがJITコンパイルされ、初
 
 ## トラブルシューティング
 
-### `nvcc fatal : Unsupported gpu architecture 'compute_120'`
+### `torch.cuda.is_available()` が `False`（最頻出）
 
-CUDA Toolkit 12.8未満を使っている。12.8以降にアップデート。
+**症状:** PyTorchがGPUを認識しない
 
-### `torch.cuda.is_available()` が `False`
-
-1. NVIDIAドライバ確認（`nvidia-smi`）
-2. PyTorchがCUDA版か確認（`torch.version.cuda`がNoneでないこと）
-3. `pip install torch`はCPU版。`--index-url`を指定してインストールし直す
+**原因と解決:**
+1. **NVIDIAドライバ未インストール**
+   - `nvidia-smi`で確認。コマンドが動かなければドライバをインストール
+2. **PyTorchがCPU版**
+   - `torch.version.cuda`がNoneの場合、CPU版がインストールされている
+   - `pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu128`で再インストール
+3. **CUDAバージョン不一致**
+   - ドライバのCUDAバージョン（`nvidia-smi`で確認）がPyTorchのCUDAバージョンより低い
+   - ドライバを最新版に更新
 
 ### ビルド時に `cl.exe not found`
 
-Developer Command Promptを使うか、MSVCのパスをPATHに追加。
+**症状:** CUDA拡張ビルド時に`error: command 'cl.exe' failed`
+
+**原因:** MSVCコンパイラがPATHに含まれていない
+
+**解決:**
+1. **Developer Command Prompt for VS 2022**から実行
+2. または環境変数PATHに追加:
+   ```
+   C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.xxxxx\bin\Hostx64\x64
+   ```
 
 ### `RuntimeError: CUDA error: no kernel image is available`
 
-sm_120向けにビルドされていない。`TORCH_CUDA_ARCH_LIST=12.0`を設定してリビルド。
+**症状:** PyTorchコードは動くが、CUDA拡張実行時にエラー
+
+**原因:** sm_120向けにビルドされていない（sm_89などの古いアーキテクチャでビルドされた）
+
+**解決:**
+```bash
+set TORCH_CUDA_ARCH_LIST=12.0
+```
+を設定してCUDA拡張をリビルド。
+
+### `nvcc fatal : Unsupported gpu architecture 'compute_120'`
+
+**症状:** ビルド時にnvccがsm_120をサポートしていないエラー
+
+**原因:** CUDA Toolkit 12.7以前を使用している
+
+**解決:** CUDA Toolkit 12.8以降にアップデート。
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "Claude Codeで開発ワークフローを自動化した全記録"
+title: "Claude Codeで開発ワークフローを自動化した全記録【2026年版】"
 emoji: "🤖"
 type: "tech"
 topics: ["ClaudeCode", "自動化", "開発効率", "AI", "プログラミング"]
@@ -82,9 +82,16 @@ allowed-tools:
 ```
 
 **ポイント:**
-- `allowed-tools`でセキュリティ制御。不要な権限を与えない
-- ルールは具体的に。「良い記事を書く」ではなく「タイトルは20-36文字」
-- Skill同士は独立。1つが壊れても他に影響しない
+- **`allowed-tools`でセキュリティ制御**
+  - 必要最小限のツールのみ許可（例: 記事作成SkillにBash(rm *)は不要）
+  - ワイルドカードに注意（`Bash(git:*)`は全git操作を許可）
+  - 機密リスクのある操作は明示的に除外
+- **ルールは具体的に**
+  - ❌ 「良い記事を書く」
+  - ✅ 「タイトルは20-36文字」「h2見出しは5-7個」
+- **Skill同士は独立**
+  - 1つが壊れても他に影響しない
+  - 共通ロジックは別ファイルに分離
 
 ---
 
@@ -100,10 +107,35 @@ Claude Codeの特定イベントに対してシェルコマンドを自動実行
 | ファイル変更後 | ビルド確認 | 壊れたコードの即時検出 |
 | ツール使用後 | ログ記録 | 操作の追跡 |
 
+### 実装例（コミット前フック）
+
+`~/.claude/hooks/pre-commit.sh`:
+```bash
+#!/bin/bash
+# Pythonファイルが変更されていればlintを実行
+if git diff --cached --name-only | grep '\.py$'; then
+    echo "Running pylint..."
+    pylint $(git diff --cached --name-only | grep '\.py$')
+    if [ $? -ne 0 ]; then
+        echo "❌ Lint failed. Fix errors before committing."
+        exit 1  # コミットをブロック
+    fi
+fi
+```
+
+設定ファイル（`~/.claude/config.json`）:
+```json
+{
+  "hooks": {
+    "pre-commit": "~/.claude/hooks/pre-commit.sh"
+  }
+}
+```
+
 **ポイント:**
 - 「忘れがちだが毎回やるべきこと」に使う
-- 重い処理を入れると体験が悪くなる。軽量に保つ
-- 失敗時の挙動を決めておく（ブロック or 警告のみ）
+- 重い処理を入れると体験が悪くなる。軽量に保つ（上記例: 3秒以内）
+- 失敗時の挙動を決めておく（`exit 1`でブロック、`exit 0`で警告のみ）
 
 ---
 
@@ -120,9 +152,49 @@ Model Context Protocol。Claude Codeが外部ツール・サービスと通信�
 | Web API | 外部サービスとの通信 |
 | データベース | データの読み書き |
 
+### 実装例（カスタムMCPサーバー）
+
+Node.jsでGitHub API連携サーバーを作成:
+
+```javascript
+// mcp-github-server.js
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { Octokit } from "@octokit/rest";
+
+const server = new Server({
+  name: "github-mcp",
+  version: "1.0.0",
+});
+
+const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+server.setRequestHandler("tools/call", async (request) => {
+  if (request.params.name === "create_issue") {
+    const { owner, repo, title, body } = request.params.arguments;
+    const result = await octokit.issues.create({ owner, repo, title, body });
+    return { content: [{ type: "text", text: JSON.stringify(result.data) }] };
+  }
+});
+
+server.connect();
+```
+
+Claude Code設定（`~/.claude/config.json`）:
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "node",
+      "args": ["mcp-github-server.js"],
+      "env": { "GITHUB_TOKEN": "ghp_xxxxx" }
+    }
+  }
+}
+```
+
 **ポイント:**
 - MCPサーバーは「Claude Codeの手足を増やす」仕組み
-- セキュリティ上、信頼できるサーバーのみ使用する
+- セキュリティ上、信頼できるサーバーのみ使用する（トークン管理に注意）
 - 公式サーバーとコミュニティサーバーがある
 
 ---
@@ -151,6 +223,46 @@ Model Context Protocol。Claude Codeが外部ツール・サービスと通信�
 - プロジェクト状態確認
 
 電車の中、カフェ、就寝前。PCなしで開発指示が出せる。
+
+### 実装例（最小構成）
+
+```python
+# discord_bot.py
+import discord
+import subprocess
+
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith("!claude "):
+        prompt = message.content[8:]  # "!claude "を除去
+
+        # Claude Code CLIを実行
+        result = subprocess.run(
+            ["claude", "code", prompt],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+
+        # 結果をDiscordに返信（2000文字制限）
+        response = result.stdout[:1900] if result.stdout else "実行完了"
+        await message.channel.send(f"```\n{response}\n```")
+
+client.run("YOUR_DISCORD_BOT_TOKEN")
+```
+
+**セキュリティ上の注意:**
+- **機密情報を送信しない:** Discord APIキー、データベースパスワード、秘密鍵などは絶対に送らない
+- **チャンネルを限定:** プライベートチャンネルのみで使用（パブリックチャンネルでの使用禁止）
+- **トークンは環境変数:** `os.getenv("DISCORD_TOKEN")`で管理
+- **ログが残る:** Discordサーバーに会話履歴が残ることを認識する
 
 ---
 
