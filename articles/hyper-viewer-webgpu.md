@@ -1,8 +1,8 @@
 ---
-title: "ブラウザで3DGSを表示する：WebGPU対応ビューア「HyperViewer」を公開した"
+title: "WebGPU対応3DGSビューア「HyperViewer」を公開した"
 emoji: "🌐"
 type: "tech"
-topics: ["WebGPU", "3DGS", "TypeScript", "3D", "オープンソース"]
+topics: ["WebGPU", "3DGS", "TypeScript", "ビューア", "OSS"]
 published: true
 ---
 

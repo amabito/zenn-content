@@ -1,8 +1,8 @@
 ---
-title: "POTR：Post-Training 3DGS圧縮で2-4倍軽量化・1.5-2倍高速化【2026年1月最新】"
+title: "POTR：Post-Training 3DGS圧縮で2-4倍軽量化【2026年最新】"
 emoji: "🗜️"
 type: "tech"
-topics: ["3DGS", "GaussianSplatting", "圧縮", "最適化", "MachineLearning"]
+topics: ["3DGS", "圧縮", "最適化", "機械学習", "POTR"]
 published: true
 published_at: "2026-01-28 21:00"
 ---

@@ -2,7 +2,7 @@
 title: "建設コンサルのDXが進まない本当の理由【現場15年の本音】"
 emoji: "🏗️"
 type: "tech"
-topics: ["建設DX", "3dgs", "iconstruction", "測量", "建設コンサルタント"]
+topics: ["建設DX", "3DGS", "i-Construction", "測量", "建設コンサル"]
 published: true
 ---
 

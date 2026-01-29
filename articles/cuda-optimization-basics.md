@@ -2,7 +2,7 @@
 title: "CUDA最適化入門：GPUプログラミングで10倍速くする基本テクニック"
 emoji: "⚡"
 type: "tech"
-topics: ["cuda", "gpu", "高速化", "機械学習", "並列処理"]
+topics: ["CUDA", "GPU", "NVIDIA", "最適化", "高速化"]
 published: true
 ---
 

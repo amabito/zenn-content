@@ -1,5 +1,5 @@
 ---
-title: "HyperRasterizerでトレーニング：DGRより50%高速な商用OKラスタライザ"
+title: "HyperRasterizerでトレーニング：DGRより50%高速"
 emoji: "🚀"
 type: "tech"
 topics: ["CUDA", "3DGS", "PyTorch", "GPU", "機械学習"]

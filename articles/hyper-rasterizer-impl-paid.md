@@ -2,7 +2,7 @@
 title: "【有料】Backward Passを130倍高速化した方法【3DGSラスタライザ】"
 emoji: "🔥"
 type: "tech"
-topics: ["cuda", "3dgs", "gpu", "機械学習", "グラフィックス"]
+topics: ["CUDA", "3DGS", "GPU", "機械学習", "CG"]
 published: true
 price: 980
 ---

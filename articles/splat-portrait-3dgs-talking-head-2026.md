@@ -1,8 +1,8 @@
 ---
-title: "Splat-Portrait：3DGSで音声からTalking Headを生成する新手法【2026年1月最新】"
+title: "Splat-Portrait：3DGSで音声からTalking Head生成【2026年最新】"
 emoji: "🗣️"
 type: "tech"
-topics: ["3DGS", "GaussianSplatting", "ComputerVision", "AI", "TalkingHead"]
+topics: ["3DGS", "AI", "音声合成", "ComputerVision", "アバター"]
 published: true
 published_at: "2026-01-28 18:00"
 ---

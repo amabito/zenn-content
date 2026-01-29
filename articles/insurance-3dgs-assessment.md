@@ -1,8 +1,8 @@
 ---
-title: "保険×3DGS：損害査定を3Dで変える新しいアプローチ"
+title: "保険損害査定3D化：再訪問コスト削減と不正検出の3DGS活用法"
 emoji: "🛡️"
 type: "tech"
-topics: ["3DGS", "保険", "DX", "損害査定", "3D"]
+topics: ["3DGS", "保険", "損害査定", "InsurTech", "DX"]
 published: true
 published_at: "2026-02-02 07:00"
 ---

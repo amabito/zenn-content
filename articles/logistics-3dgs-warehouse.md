@@ -1,8 +1,8 @@
 ---
-title: "物流×3DGS：倉庫・配送センターの3D化で何が変わるか"
+title: "物流倉庫3D化：棚卸し1/3・レイアウト検討1/5にする3DGS活用"
 emoji: "📦"
 type: "tech"
-topics: ["3DGS", "物流", "DX", "3D", "倉庫管理"]
+topics: ["3DGS", "物流", "倉庫管理", "DX", "デジタルツイン"]
 published: true
 published_at: "2026-02-02 18:00"
 ---

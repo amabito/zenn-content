@@ -2,7 +2,7 @@
 title: "CUDAメモリ管理で3日ハマった話：first-frame bugと73GB問題"
 emoji: "🐛"
 type: "tech"
-topics: ["cuda", "gpu", "メモリ管理", "デバッグ"]
+topics: ["CUDA", "GPU", "メモリ管理", "デバッグ", "NVIDIA"]
 published: true
 ---
 

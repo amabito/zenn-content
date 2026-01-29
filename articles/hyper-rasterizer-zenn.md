@@ -2,7 +2,7 @@
 title: "商用OKで最速の3DGSラスタライザを作った【4169FPS達成】"
 emoji: "🚀"
 type: "tech"
-topics: ["3dgs", "cuda", "機械学習", "コンピュータグラフィックス", "OSS"]
+topics: ["3DGS", "CUDA", "機械学習", "CG", "OSS"]
 published: true
 ---
 

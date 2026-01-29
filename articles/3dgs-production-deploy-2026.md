@@ -2,7 +2,7 @@
 title: "3DGS商用化が本格化した2026年：映画・不動産・ゲームの実例"
 emoji: "🏭"
 type: "tech"
-topics: ["3DGS", "GaussianSplatting", "商用化", "WebGPU", "UnrealEngine"]
+topics: ["3DGS", "商用化", "WebGPU", "UnrealEngine", "本番環境"]
 published: true
 published_at: "2026-02-01 21:00"
 ---

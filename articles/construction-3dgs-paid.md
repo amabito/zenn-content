@@ -2,7 +2,7 @@
 title: "【有料】建設現場3DGS実践ガイド：品質向上と商用ワークフロー"
 emoji: "🔥"
 type: "tech"
-topics: ["3dgs", "建設", "デジタルツイン", "ドローン", "測量"]
+topics: ["3DGS", "建設", "デジタルツイン", "ドローン", "測量"]
 published: true
 price: 1480
 ---

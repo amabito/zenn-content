@@ -1,5 +1,5 @@
 ---
-title: "RTX 5090 sm_120の実測と移行ガイド：BlackwellでCUDAコードはどう変わるか"
+title: "RTX 5090 sm_120移行ガイド：Blackwell対応の全手順"
 emoji: "⚡"
 type: "tech"
 topics: ["RTX5090", "CUDA", "GPU", "Blackwell", "sm120"]

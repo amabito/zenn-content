@@ -2,7 +2,7 @@
 title: "【有料】3DGSラスタライザを自作する3つの方法【商用利用OK】"
 emoji: "🔥"
 type: "tech"
-topics: ["3dgs", "cuda", "ラスタライザ", "商用利用"]
+topics: ["3DGS", "CUDA", "ラスタライザ", "商用利用"]
 published: true
 price: 1980
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Windows + PyTorch + CUDA環境構築で99%が失敗する理由【2026年最新】"
+title: "Windows PyTorch CUDA環境構築2026：失敗しない完全手順"
 emoji: "💻"
 type: "tech"
-topics: ["pytorch", "cuda", "windows", "機械学習", "環境構築"]
+topics: ["PyTorch", "CUDA", "Windows", "環境構築", "NVIDIA"]
 published: false
 ---
 

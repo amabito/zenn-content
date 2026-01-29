@@ -2,7 +2,7 @@
 title: "PyTorch CUDA拡張がビルドできない？Windowsで動かす完全ガイド"
 emoji: "🔧"
 type: "tech"
-topics: ["pytorch", "cuda", "python", "cpp", "windows"]
+topics: ["PyTorch", "CUDA", "Python", "CPP", "Windows"]
 published: true
 ---
 

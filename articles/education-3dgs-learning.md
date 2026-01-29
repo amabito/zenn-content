@@ -1,8 +1,8 @@
 ---
-title: "教育×3DGS：教室を3Dで再現する時代が来た"
+title: "教育3D教材制作：コスト1/10で実現する3DGS活用法"
 emoji: "🎓"
 type: "tech"
-topics: ["3DGS", "教育", "EdTech", "3D", "VR"]
+topics: ["3DGS", "教育", "EdTech", "3D教材", "GIGAスクール"]
 published: true
 published_at: "2026-02-02 21:00"
 ---

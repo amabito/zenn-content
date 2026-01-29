@@ -1,5 +1,5 @@
 ---
-title: "Windows CUDA環境構築2026完全ガイド：PyTorch 2.8.0+CUDA 12.8+RTX 5090決定版"
+title: "Windows CUDA環境構築2026：PyTorch 2.8+RTX 5090対応"
 emoji: "🔧"
 type: "tech"
 topics: ["Windows", "CUDA", "PyTorch", "環境構築", "RTX5090"]

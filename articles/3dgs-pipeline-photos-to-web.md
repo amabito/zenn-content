@@ -1,8 +1,8 @@
 ---
-title: "写真からWebで見れる3Dモデルを作る：3DGSパイプライン完全ガイド"
+title: "3DGSパイプライン完全ガイド：写真からWeb 3Dモデルまで"
 emoji: "📸"
 type: "tech"
-topics: ["3dgs", "Python", "WebGPU", "CUDA", "コンピュータグラフィックス"]
+topics: ["3DGS", "WebGPU", "Python", "CUDA", "パイプライン"]
 published: true
 ---
 

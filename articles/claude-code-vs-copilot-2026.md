@@ -1,5 +1,5 @@
 ---
-title: "Claude Code vs GitHub Copilot 2026：AI開発ツール実践比較"
+title: "Claude Code vs GitHub Copilot：AI開発ツール実践比較2026"
 emoji: "⚔️"
 type: "tech"
 topics: ["ClaudeCode", "GitHubCopilot", "AI", "開発効率化", "Cursor"]

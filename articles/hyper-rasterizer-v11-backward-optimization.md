@@ -2,7 +2,7 @@
 title: "3DGSラスタライザで10dB PSNR差を解消した4つの最適化【HyperRasterizer v1.1】"
 emoji: "🔬"
 type: "tech"
-topics: ["3dgs", "cuda", "機械学習", "最適化", "コンピュータグラフィックス"]
+topics: ["3DGS", "CUDA", "機械学習", "最適化", "CG"]
 published: false
 ---
 

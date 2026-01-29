@@ -2,7 +2,7 @@
 title: "Forward-Order Backwardが数値的に破綻する理由【3DGS/CUDA実装の罠】"
 emoji: "🔢"
 type: "tech"
-topics: ["cuda", "数値計算", "3dgs", "深層学習", "浮動小数点"]
+topics: ["CUDA", "数値計算", "3DGS", "深層学習", "浮動小数点"]
 published: false
 ---
 

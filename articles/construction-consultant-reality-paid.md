@@ -2,7 +2,7 @@
 title: "【有料】建設コンサルDX実践ガイド：中小企業が3DGSで勝つ方法"
 emoji: "💼"
 type: "tech"
-topics: ["建設DX", "3dgs", "iconstruction", "経営", "コンサルティング"]
+topics: ["建設DX", "3DGS", "iConstruction", "経営", "コンサルティング"]
 published: true
 price: 1480
 ---

@@ -2,7 +2,7 @@
 title: "【有料】PyTorch CUDA拡張完全ガイド：互換性地獄を乗り越える"
 emoji: "🔥"
 type: "tech"
-topics: ["pytorch", "cuda", "python", "cpp", "windows"]
+topics: ["PyTorch", "CUDA", "Python", "CPP", "Windows"]
 published: true
 price: 500
 ---

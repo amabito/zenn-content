@@ -2,7 +2,7 @@
 title: "内見数7割削減：不動産×3DGSで成約率を上げる方法"
 emoji: "🏠"
 type: "tech"
-topics: ["不動産", "3dgs", "DX", "バーチャル内見", "proptech"]
+topics: ["不動産", "3DGS", "DX", "バーチャル内見", "PropTech"]
 published: true
 ---
 

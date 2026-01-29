@@ -1,5 +1,5 @@
 ---
-title: "3DGS品質チェックリスト完全版：PSNR 30→35への道【本番環境対応】"
+title: "3DGS品質チェックリスト完全版：PSNR 30→35への道"
 emoji: "✅"
 type: "tech"
 topics: ["3DGS", "品質管理", "チェックリスト", "PSNR", "本番環境"]

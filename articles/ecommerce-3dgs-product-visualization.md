@@ -1,8 +1,8 @@
 ---
-title: "EC×3DGS：商品を3D表示したら購買率が2倍になった話"
+title: "EC商品3D化：購買率2倍・返品率30%削減の3DGS活用事例"
 emoji: "🛒"
 type: "tech"
-topics: ["3DGS", "EC", "3D", "eコマース", "UX"]
+topics: ["3DGS", "EC", "eコマース", "3D商品", "UX"]
 published: true
 ---
 

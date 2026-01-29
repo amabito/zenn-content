@@ -1,5 +1,5 @@
 ---
-title: "Windows×CUDA×PyTorch環境構築完全ガイド2026：RTX 5090対応"
+title: "Windows CUDA PyTorch環境構築2026：RTX 5090完全対応"
 emoji: "🔧"
 type: "tech"
 topics: ["CUDA", "PyTorch", "Windows", "GPU", "RTX5090"]

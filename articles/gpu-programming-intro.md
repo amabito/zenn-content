@@ -2,7 +2,7 @@
 title: "GPUプログラミング入門：CPUより100倍速い世界への第一歩"
 emoji: "⚡"
 type: "tech"
-topics: ["GPU", "CUDA", "Python", "機械学習", "高速化"]
+topics: ["GPU", "CUDA", "Python", "NVIDIA", "高速化"]
 published: true
 ---
 

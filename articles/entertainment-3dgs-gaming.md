@@ -1,8 +1,8 @@
 ---
-title: "エンタメ×3DGS：ゲーム・映画・VRの3D制作が変わる"
+title: "ゲーム背景3D化：制作コスト1/5にする3DGS活用法"
 emoji: "🎮"
 type: "tech"
-topics: ["3DGS", "ゲーム開発", "VR", "3D", "CG"]
+topics: ["3DGS", "ゲーム開発", "3DCG", "VR", "映画VFX"]
 published: true
 published_at: "2026-01-28 12:00"
 ---

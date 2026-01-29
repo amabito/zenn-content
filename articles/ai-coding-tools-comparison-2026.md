@@ -1,5 +1,5 @@
 ---
-title: "AI開発ツール比較2026：Claude Code vs Cursor vs GitHub Copilot 徹底検証"
+title: "AI開発ツール比較2026：Claude Code vs Cursor vs Copilot"
 emoji: "🤖"
 type: "tech"
 topics: ["AI", "Claude", "Copilot", "開発環境", "生産性"]

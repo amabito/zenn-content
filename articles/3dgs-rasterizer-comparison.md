@@ -2,7 +2,7 @@
 title: "【2026年版】3DGSラスタライザ比較：商用OKで最速はどれ？"
 emoji: "🔍"
 type: "tech"
-topics: ["3dgs", "cuda", "機械学習", "オープンソース", "ライセンス"]
+topics: ["3DGS", "CUDA", "機械学習", "OSS", "ライセンス"]
 published: true
 ---
 

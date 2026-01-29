@@ -1,5 +1,5 @@
 ---
-title: "Claude Codeの状態をデスクトップに常時表示する：WPFオーバーレイを自作した"
+title: "Claude Code状態監視：WPFオーバーレイで常時表示するツールを自作"
 emoji: "🖥️"
 type: "tech"
 topics: ["ClaudeCode", "CSharp", "WPF", "dotnet", "開発ツール"]

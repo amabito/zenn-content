@@ -2,7 +2,7 @@
 title: "NeRF vs 3DGS：2026年、どちらを選ぶべきか"
 emoji: "⚔️"
 type: "tech"
-topics: ["nerf", "3dgs", "機械学習", "コンピュータグラフィックス", "3d"]
+topics: ["NeRF", "3DGS", "機械学習", "CG", "3D"]
 published: true
 ---
 

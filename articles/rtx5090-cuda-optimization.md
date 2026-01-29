@@ -2,7 +2,7 @@
 title: "RTX 5090 CUDA最適化：知らないと損する5つの新常識"
 emoji: "⚡"
 type: "tech"
-topics: ["cuda", "gpu", "rtx5090", "blackwell", "最適化"]
+topics: ["CUDA", "GPU", "RTX5090", "Blackwell", "最適化"]
 published: true
 ---
 

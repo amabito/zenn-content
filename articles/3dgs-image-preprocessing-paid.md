@@ -2,7 +2,7 @@
 title: "【有料】3DGS画像前処理完全ガイド：ブラー除去から露出補正まで"
 emoji: "🖼️"
 type: "tech"
-topics: ["3dgs", "画像処理", "python", "opencv", "機械学習"]
+topics: ["3DGS", "画像処理", "Python", "OpenCV", "機械学習"]
 published: true
 price: 1480
 ---
