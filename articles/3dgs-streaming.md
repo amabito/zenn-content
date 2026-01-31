@@ -4,7 +4,7 @@ emoji: "📡"
 type: "tech"
 topics: ["3DGS", "ストリーミング", "3D", "Web", "最適化"]
 published: true
-published_at: "2026-01-03 12:00"
+published_at: "2026-01-03 21:00"
 ---
 
 # 結論から言う

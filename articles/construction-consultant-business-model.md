@@ -4,7 +4,7 @@ emoji: "📊"
 type: "tech"
 topics: ["建設コンサル", "ビジネスモデル", "経営", "建設業", "公共事業"]
 published: true
-published_at: "2026-01-06 12:00"
+published_at: "2026-01-07 18:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,7 @@ emoji: "📦"
 type: "tech"
 topics: ["3DGS", "圧縮", "3D", "機械学習", "最適化"]
 published: true
-published_at: "2026-01-02 07:00"
+published_at: "2026-01-01 21:00"
 ---
 
 # 結論から言う

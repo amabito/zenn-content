@@ -4,7 +4,7 @@ emoji: "🔮"
 type: "tech"
 topics: ["NeRF", "3DGS", "機械学習", "CG", "NVIDIA"]
 published: true
-published_at: "2026-01-16 07:00"
+published_at: "2026-01-16 21:00"
 ---
 
 # 結論から言う

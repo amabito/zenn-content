@@ -4,7 +4,7 @@ emoji: "🏢"
 type: "tech"
 topics: ["建設業", "経営", "中小企業", "建設DX", "経営戦略"]
 published: true
-published_at: "2026-01-18 18:00"
+published_at: "2026-01-20 18:00"
 ---
 
 # 結論から言う

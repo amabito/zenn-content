@@ -4,7 +4,7 @@ emoji: "📸"
 type: "tech"
 topics: ["3DGS", "gsplat", "nerfstudio", "CUDA", "カメラ"]
 published: true
-published_at: "2026-02-03 07:00"
+published_at: "2026-01-13 12:00"
 ---
 
 # 結論から言う

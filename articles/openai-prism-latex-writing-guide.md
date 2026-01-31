@@ -4,7 +4,7 @@ emoji: "📝"
 type: "tech"
 topics: ["OpenAI", "Prism", "LaTeX", "論文", "GPT"]
 published: true
-published_at: "2026-01-30 00:00"
+published_at: "2026-01-17 18:00"
 ---
 
 # 結論から言う

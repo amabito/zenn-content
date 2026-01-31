@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["PyTorch", "CUDA", "Python", "CPP", "Windows"]
 published: true
-published_at: "2026-01-16 18:00"
+published_at: "2026-01-18 12:00"
 price: 500
 ---
 

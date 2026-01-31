@@ -4,7 +4,7 @@ emoji: "📘"
 type: "idea"
 topics: ["DX", "経営", "業務改善", "建設業", "コンサルティング"]
 published: true
-published_at: "2026-01-14 18:00"
+published_at: "2026-01-15 12:00"
 price: 1480
 ---
 
