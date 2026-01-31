@@ -4,6 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["cuda", "gpu", "メモリ管理", "最適化"]
 published: true
+published_at: "2026-01-08 12:00"
 price: 1480
 ---
 

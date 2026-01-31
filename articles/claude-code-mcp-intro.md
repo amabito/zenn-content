@@ -4,6 +4,7 @@ emoji: "🔌"
 type: "tech"
 topics: ["ClaudeCode", "MCP", "AI", "CLI", "自動化"]
 published: true
+published_at: "2026-01-04 12:00"
 ---
 
 # 結論から言う

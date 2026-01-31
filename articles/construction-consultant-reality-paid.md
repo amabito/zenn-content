@@ -4,6 +4,7 @@ emoji: "💼"
 type: "tech"
 topics: ["建設DX", "3DGS", "iConstruction", "経営", "コンサルティング"]
 published: true
+published_at: "2026-01-06 18:00"
 price: 1480
 ---
 

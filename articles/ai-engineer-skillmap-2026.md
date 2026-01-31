@@ -4,6 +4,7 @@ emoji: "🗺️"
 type: "idea"
 topics: ["AI", "キャリア", "機械学習", "エンジニア", "スキルアップ"]
 published: true
+published_at: "2026-01-03 18:00"
 ---
 
 # 結論から言う

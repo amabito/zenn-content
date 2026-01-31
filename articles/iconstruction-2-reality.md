@@ -4,6 +4,7 @@ emoji: "🏗️"
 type: "tech"
 topics: ["iconstruction", "建設DX", "建設業", "国土交通省", "生産性向上"]
 published: true
+published_at: "2026-01-14 12:00"
 ---
 
 # 結論から言う

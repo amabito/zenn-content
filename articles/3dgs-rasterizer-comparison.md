@@ -4,6 +4,7 @@ emoji: "🔍"
 type: "tech"
 topics: ["3DGS", "CUDA", "機械学習", "OSS", "ライセンス"]
 published: true
+published_at: "2026-01-03 07:00"
 ---
 
 # 結論から言う

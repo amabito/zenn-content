@@ -4,6 +4,7 @@ emoji: "💼"
 type: "tech"
 topics: ["3DGS", "ビジネス", "DX", "3D", "スタートアップ"]
 published: true
+published_at: "2026-01-01 07:00"
 ---
 
 # 結論から言う

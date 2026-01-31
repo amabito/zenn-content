@@ -4,6 +4,7 @@ emoji: "💎"
 type: "idea"
 topics: ["キャリア", "エンジニア", "年収", "転職", "スキルアップ"]
 published: true
+published_at: "2026-01-11 12:00"
 price: 980
 ---
 

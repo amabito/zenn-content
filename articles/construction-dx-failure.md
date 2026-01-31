@@ -4,6 +4,7 @@ emoji: "🚧"
 type: "tech"
 topics: ["建設DX", "DX", "建設業", "経営", "業務改善"]
 published: true
+published_at: "2026-01-07 18:00"
 ---
 
 # 結論から言う

@@ -4,6 +4,7 @@ emoji: "🖥️"
 type: "tech"
 topics: ["ClaudeCode", "CSharp", "WPF", "dotnet", "開発ツール"]
 published: true
+published_at: "2026-01-04 18:00"
 ---
 
 # 結論から言う

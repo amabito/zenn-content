@@ -4,6 +4,7 @@ emoji: "🐛"
 type: "tech"
 topics: ["CUDA", "GPU", "メモリ管理", "デバッグ", "NVIDIA"]
 published: true
+published_at: "2026-01-08 18:00"
 ---
 
 # 3日間、真っ黒な画面と戦った

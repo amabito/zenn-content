@@ -4,6 +4,7 @@ emoji: "💰"
 type: "idea"
 topics: ["キャリア", "エンジニア", "年収", "転職", "副業"]
 published: true
+published_at: "2026-01-11 18:00"
 ---
 
 # 結論から言う

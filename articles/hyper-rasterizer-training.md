@@ -4,6 +4,7 @@ emoji: "🚀"
 type: "tech"
 topics: ["CUDA", "3DGS", "PyTorch", "GPU", "機械学習"]
 published: true
+published_at: "2026-01-13 07:00"
 ---
 
 # 結論から言う

@@ -4,6 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["CUDA", "3DGS", "GPU", "機械学習", "CG"]
 published: true
+published_at: "2026-01-12 18:00"
 price: 980
 ---
 

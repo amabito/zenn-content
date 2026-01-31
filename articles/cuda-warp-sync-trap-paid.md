@@ -4,6 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["cuda", "gpu", "並列処理", "nvidia", "最適化"]
 published: true
+published_at: "2026-01-09 12:00"
 price: 980
 ---
 
