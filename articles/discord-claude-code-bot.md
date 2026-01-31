@@ -4,7 +4,7 @@ emoji: "📱"
 type: "tech"
 topics: ["Discord", "ClaudeCode", "Python", "DiscordBot", "自動化"]
 published: true
-published_at: "2026-01-11 07:00"
+published_at: "2026-02-11 07:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,7 @@ emoji: "🪤"
 type: "tech"
 topics: ["CUDA", "GPU", "デバッグ", "並列処理", "NVIDIA"]
 published: true
-published_at: "2026-01-10 12:00"
+published_at: "2026-02-10 12:00"
 ---
 
 # 結論から言う

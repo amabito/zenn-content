@@ -13,7 +13,7 @@ from pathlib import Path
 
 # 設定
 ARTICLES_DIR = Path(__file__).parent.parent / "articles"
-START_DATE = datetime(2026, 1, 1, 7, 0)  # 1月1日 7:00から開始
+START_DATE = datetime(2026, 2, 1, 7, 0)  # 2月1日 7:00から開始（明日から）
 ARTICLES_PER_DAY = 4  # 1日あたり4記事
 TIME_SLOTS = ["07:00", "12:00", "18:00", "21:00"]  # 公開時刻
 

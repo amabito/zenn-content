@@ -4,7 +4,7 @@ emoji: "📸"
 type: "tech"
 topics: ["3DGS", "WebGPU", "Python", "CUDA", "パイプライン"]
 published: true
-published_at: "2026-01-02 18:00"
+published_at: "2026-02-02 18:00"
 ---
 
 # 結論から言う

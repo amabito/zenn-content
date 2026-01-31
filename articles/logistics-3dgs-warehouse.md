@@ -4,7 +4,7 @@ emoji: "📦"
 type: "tech"
 topics: ["3DGS", "物流", "倉庫管理", "DX", "デジタルツイン"]
 published: true
-published_at: "2026-01-15 21:00"
+published_at: "2026-02-15 21:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,7 @@ emoji: "🔥"
 type: "tech"
 topics: ["GPU", "CUDA", "PyTorch", "高速化", "機械学習"]
 published: true
-published_at: "2026-01-13 07:00"
+published_at: "2026-02-13 07:00"
 price: 1480
 ---
 

@@ -4,7 +4,7 @@ emoji: "🤖"
 type: "tech"
 topics: ["AI", "Claude", "Copilot", "開発環境", "生産性"]
 published: true
-published_at: "2026-01-04 07:00"
+published_at: "2026-02-04 07:00"
 ---
 
 # 結論から言う

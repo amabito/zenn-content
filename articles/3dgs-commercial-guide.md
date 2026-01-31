@@ -4,7 +4,7 @@ emoji: "💼"
 type: "tech"
 topics: ["3DGS", "ライセンス", "OSS", "商用利用"]
 published: true
-published_at: "2026-01-01 18:00"
+published_at: "2026-02-01 18:00"
 ---
 
 # 結論から言う
