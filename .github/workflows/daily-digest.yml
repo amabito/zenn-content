@@ -1,9 +1,9 @@
 name: Daily Tech Digest
 
 on:
-  schedule:
-    # JST 08:30 = UTC 23:30 (前日)
-    - cron: '30 23 * * *'
+  # Disabled: now runs locally via Windows Task Scheduler (claude CLI for translation)
+  # schedule:
+  #   - cron: '30 23 * * *'
   workflow_dispatch:
 
 permissions:
