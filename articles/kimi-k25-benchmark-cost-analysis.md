@@ -3,7 +3,7 @@ title: "Kimi K2.5の実力：Opus比1/10コストでGPT-5.2級の衝撃"
 emoji: "🚀"
 type: "tech"
 topics: ["AI", "LLM", "Kimi", "ベンチマーク", "コスト分析"]
-published: false
+published: true
 ---
 
 # 結論から言う
