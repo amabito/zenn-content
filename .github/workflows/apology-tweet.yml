@@ -1,0 +1,51 @@
+name: Post Apology Tweet
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apology-tweet.yml']
+
+jobs:
+  apology:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install tweepy
+
+      - name: Post apology tweet
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        run: |
+          python - <<'PYEOF'
+          import os
+          import tweepy
+
+          client = tweepy.Client(
+              consumer_key=os.environ["TWITTER_API_KEY"],
+              consumer_secret=os.environ["TWITTER_API_SECRET"],
+              access_token=os.environ["TWITTER_ACCESS_TOKEN"],
+              access_token_secret=os.environ["TWITTER_ACCESS_TOKEN_SECRET"],
+          )
+
+          text = (
+              "【お詫び】\n"
+              "先日より投稿していたZenn記事のリンクが一部アクセスできない状態"
+              "（403エラー）になっておりました。\n\n"
+              "原因は公開日時の設定ミスで、現在は全記事にアクセス可能です。\n"
+              "ご迷惑をおかけして申し訳ございません。\n\n"
+              "記事一覧はこちら:\n"
+              "https://zenn.dev/amabito"
+          )
+
+          response = client.create_tweet(text=text)
+          tweet_id = response.data["id"]
+          print(f"Apology tweet posted: https://twitter.com/i/status/{tweet_id}")
+          PYEOF
