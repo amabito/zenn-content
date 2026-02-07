@@ -4,7 +4,6 @@ emoji: "🏥"
 type: "tech"
 topics: ["3DGS", "医療", "手術", "医学教育", "シミュレーション"]
 published: true
-published_at: "2026-02-16 18:00"
 ---
 
 # 結論から言う

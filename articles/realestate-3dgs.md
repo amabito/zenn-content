@@ -4,7 +4,6 @@ emoji: "🏠"
 type: "tech"
 topics: ["不動産", "3DGS", "DX", "バーチャル内見", "PropTech"]
 published: true
-published_at: "2026-02-19 07:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,6 @@ emoji: "🤖"
 type: "tech"
 topics: ["Claude", "AgentSDK", "MCP", "Python", "自動化"]
 published: true
-published_at: "2026-02-04 21:00"
 ---
 
 # 結論から言う

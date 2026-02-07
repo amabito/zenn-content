@@ -4,7 +4,6 @@ emoji: "🔧"
 type: "tech"
 topics: ["Discord", "Claude", "Python", "Bot", "自動化"]
 published: true
-published_at: "2026-02-10 21:00"
 price: 980
 ---
 

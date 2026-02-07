@@ -4,7 +4,6 @@ emoji: "🌐"
 type: "tech"
 topics: ["WebGPU", "3DGS", "TypeScript", "ビューア", "OSS"]
 published: true
-published_at: "2026-02-14 12:00"
 ---
 
 # 結論から言う

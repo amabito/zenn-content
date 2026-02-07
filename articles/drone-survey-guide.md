@@ -4,7 +4,6 @@ emoji: "🚁"
 type: "tech"
 topics: ["ドローン測量", "測量", "建設DX", "i-Construction", "点群"]
 published: true
-published_at: "2026-02-11 12:00"
 ---
 
 # 結論から言う

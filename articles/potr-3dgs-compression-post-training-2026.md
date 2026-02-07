@@ -4,7 +4,6 @@ emoji: "🗜️"
 type: "tech"
 topics: ["3DGS", "圧縮", "最適化", "機械学習", "POTR"]
 published: true
-published_at: "2026-02-17 21:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,6 @@ emoji: "🖼️"
 type: "tech"
 topics: ["3DGS", "画像処理", "Python", "OpenCV", "機械学習"]
 published: true
-published_at: "2026-02-02 12:00"
 price: 1480
 ---
 

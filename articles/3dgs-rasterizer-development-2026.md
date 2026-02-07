@@ -4,7 +4,6 @@ emoji: "🛠️"
 type: "tech"
 topics: ["3DGS", "CUDA", "GPU", "ラスタライザ", "最適化"]
 published: true
-published_at: "2026-02-03 18:00"
 ---
 
 # 結論から言う

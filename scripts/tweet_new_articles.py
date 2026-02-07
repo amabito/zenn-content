@@ -17,6 +17,7 @@ Zenn記事の自動ツイートスクリプト
 import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -27,7 +28,7 @@ MAX_TWEET_LENGTH = 280
 
 
 def parse_frontmatter(content: str) -> dict:
-    """frontmatterからtitle, published, topicsを抽出"""
+    """frontmatterからtitle, published, published_at, topicsを抽出"""
     match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
     if not match:
         return {}
@@ -43,6 +44,12 @@ def parse_frontmatter(content: str) -> dict:
     if published_match:
         result["published"] = published_match.group(1) == "true"
 
+    published_at_match = re.search(
+        r'^published_at:\s*["\']?([\d\-\s:]+)["\']?\s*$', fm, re.MULTILINE
+    )
+    if published_at_match:
+        result["published_at"] = published_at_match.group(1).strip()
+
     topics_match = re.search(r"^topics:\s*\[(.*?)\]", fm, re.MULTILINE)
     if topics_match:
         raw = topics_match.group(1)
@@ -53,13 +60,27 @@ def parse_frontmatter(content: str) -> dict:
     return result
 
 
+def is_published_now(meta: dict) -> bool:
+    """published: true かつ published_at が現在以前（または未設定）か判定"""
+    if not meta.get("published"):
+        return False
+    published_at = meta.get("published_at")
+    if not published_at:
+        return True
+    try:
+        pub_dt = datetime.strptime(published_at, "%Y-%m-%d %H:%M")
+        return pub_dt <= datetime.now()
+    except ValueError:
+        return True
+
+
 def get_published_articles() -> dict:
-    """published: true の全記事を {slug: {title, topics}} で返す"""
+    """published: true かつ公開日が現在以前の記事を返す"""
     articles = {}
     for md_file in ARTICLES_DIR.glob("*.md"):
         content = md_file.read_text(encoding="utf-8")
         meta = parse_frontmatter(content)
-        if meta.get("published"):
+        if is_published_now(meta):
             slug = md_file.stem
             articles[slug] = {
                 "title": meta.get("title", slug),

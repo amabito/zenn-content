@@ -4,7 +4,6 @@ emoji: "🛡️"
 type: "tech"
 topics: ["3DGS", "保険", "損害査定", "InsurTech", "DX"]
 published: true
-published_at: "2026-02-15 07:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,6 @@ emoji: "🏭"
 type: "tech"
 topics: ["3DGS", "製造業", "DX", "3D", "スマートファクトリー"]
 published: true
-published_at: "2026-02-16 12:00"
 ---
 
 # 結論から言う

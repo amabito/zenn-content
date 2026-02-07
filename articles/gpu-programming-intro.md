@@ -4,7 +4,6 @@ emoji: "⚡"
 type: "tech"
 topics: ["GPU", "CUDA", "Python", "NVIDIA", "高速化"]
 published: true
-published_at: "2026-02-12 21:00"
 ---
 
 # 結論から言う

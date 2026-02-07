@@ -4,7 +4,6 @@ emoji: "💸"
 type: "tech"
 topics: ["建設業", "ビジネスモデル", "経営", "公共事業", "ゼネコン"]
 published: true
-published_at: "2026-02-08 21:00"
 ---
 
 # 結論から言う

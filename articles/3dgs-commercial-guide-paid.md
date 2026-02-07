@@ -4,7 +4,6 @@ emoji: "🔥"
 type: "tech"
 topics: ["3DGS", "CUDA", "ラスタライザ", "商用利用"]
 published: true
-published_at: "2026-02-01 12:00"
 price: 1980
 ---
 

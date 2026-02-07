@@ -4,7 +4,6 @@ emoji: "🚀"
 type: "tech"
 topics: ["3DGS", "CUDA", "機械学習", "CG", "OSS"]
 published: true
-published_at: "2026-02-14 07:00"
 ---
 
 # 結論から言う

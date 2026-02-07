@@ -4,7 +4,6 @@ emoji: "🚀"
 type: "tech"
 topics: ["ClaudeCode", "AI", "開発効率", "CLI", "自動化"]
 published: true
-published_at: "2026-02-05 12:00"
 ---
 
 # 結論から言う

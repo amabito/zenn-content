@@ -4,7 +4,6 @@ emoji: "📷"
 type: "tech"
 topics: ["3DGS", "CUDA", "NVIDIA", "ComputerVision", "画像処理"]
 published: true
-published_at: "2026-02-17 12:00"
 ---
 
 # 結論から言う

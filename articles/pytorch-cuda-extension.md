@@ -4,7 +4,6 @@ emoji: "🔧"
 type: "tech"
 topics: ["PyTorch", "CUDA", "Python", "CPP", "Windows"]
 published: true
-published_at: "2026-02-18 18:00"
 ---
 
 # 結論から言う

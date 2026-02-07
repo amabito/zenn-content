@@ -4,7 +4,6 @@ emoji: "🚗"
 type: "tech"
 topics: ["3DGS", "自動運転", "シミュレーション", "AV", "センサーフュージョン"]
 published: true
-published_at: "2026-02-04 18:00"
 ---
 
 # 結論から言う

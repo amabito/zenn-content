@@ -4,7 +4,6 @@ emoji: "🚀"
 type: "tech"
 topics: ["Claude", "AI", "生産性", "自動化", "プログラミング"]
 published: true
-published_at: "2026-02-06 12:00"
 price: 980
 ---
 

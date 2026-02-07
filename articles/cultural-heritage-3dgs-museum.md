@@ -4,7 +4,6 @@ emoji: "🏛️"
 type: "tech"
 topics: ["3DGS", "文化財", "デジタルアーカイブ", "博物館", "デジタル保存"]
 published: true
-published_at: "2026-02-10 18:00"
 ---
 
 # 結論から言う

@@ -4,7 +4,6 @@ emoji: "🗣️"
 type: "tech"
 topics: ["3DGS", "AI", "音声合成", "ComputerVision", "アバター"]
 published: true
-published_at: "2026-02-20 21:00"
 ---
 
 # 結論から言う

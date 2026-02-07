@@ -4,7 +4,6 @@ emoji: "⚡"
 type: "tech"
 topics: ["CUDA", "Blackwell", "RTX5090", "GPU", "sm120"]
 published: true
-published_at: "2026-02-09 07:00"
 ---
 
 # 結論から言う
