@@ -498,17 +498,13 @@ def format_raw(items: list[dict]) -> str:
 # Claude CLI要約
 # ──────────────────────────────────────────────
 
-def translate_english_items(items: list[dict]):
-    """英語アイテムのタイトルをClaude CLIで日本語翻訳（in-place更新）"""
-    english_sources = {"hf_papers", "reddit", "youtube", "github_release", "anthropic"}
-    en_items = [
-        (i, item) for i, item in enumerate(items)
-        if item["source"] in english_sources and item.get("title")
-    ]
-    if not en_items:
-        return
+def _translate_via_anthropic_api(titles: list[str]) -> dict[int, str]:
+    """Anthropic Messages APIで英語タイトルを日本語翻訳"""
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        return {}
 
-    lines = [f"{idx}: {item['title'][:120]}" for idx, (_, item) in enumerate(en_items, 1)]
+    lines = [f"{idx}: {t[:120]}" for idx, t in enumerate(titles, 1)]
     prompt = (
         "Translate these English tech article titles to Japanese. "
         "Keep proper nouns and tech terms (3DGS, CUDA, LLM, PyTorch, Claude etc.) as-is. "
@@ -516,20 +512,54 @@ def translate_english_items(items: list[dict]):
         + "\n".join(lines)
     )
 
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json={
+                "model": "claude-haiku-4-5-20251001",
+                "max_tokens": 2048,
+                "messages": [{"role": "user", "content": prompt}],
+            },
+            timeout=60,
+        )
+        resp.raise_for_status()
+        output = resp.json()["content"][0]["text"]
+
+        translations = {}
+        for line in output.strip().split("\n"):
+            m = re.match(r"(\d+)\s*[:：．.\)）\-\>→]\s*(.+)", line.strip())
+            if m:
+                translations[int(m.group(1))] = m.group(2).strip()
+        return translations
+    except Exception as e:
+        print(f"[翻訳API] エラー: {e}", file=sys.stderr)
+        return {}
+
+
+def _translate_via_claude_cli(titles: list[str]) -> dict[int, str]:
+    """Claude CLIで英語タイトルを日本語翻訳"""
     claude_cmd = shutil.which("claude")
     if not claude_cmd:
-        print("[翻訳] claude コマンドが見つかりません", file=sys.stderr)
-        return
+        return {}
 
-    print(f"[翻訳] {len(en_items)}件の英語タイトルを日本語化中...")
+    lines = [f"{idx}: {t[:120]}" for idx, t in enumerate(titles, 1)]
+    prompt = (
+        "Translate these English tech article titles to Japanese. "
+        "Keep proper nouns and tech terms (3DGS, CUDA, LLM, PyTorch, Claude etc.) as-is. "
+        "Output ONLY numbered translations, no explanations.\n\n"
+        + "\n".join(lines)
+    )
+
     try:
-        # Windowsではコマンドライン引数に改行を含められないため、
-        # 一時ファイル経由で渡す
         import tempfile
         prompt_file = Path(tempfile.gettempdir()) / "digest_translate_prompt.txt"
         prompt_file.write_text(prompt, encoding="utf-8")
 
-        # shell=True でファイル内容をclaude -pに渡す
         if sys.platform == "win32":
             shell_cmd = f'chcp 65001 >nul && "{claude_cmd}" -p < "{prompt_file}"'
         else:
@@ -541,8 +571,7 @@ def translate_english_items(items: list[dict]):
         prompt_file.unlink(missing_ok=True)
 
         if result.returncode != 0 or not result.stdout.strip():
-            print("[翻訳] Claude CLI失敗、原文のまま出力", file=sys.stderr)
-            return
+            return {}
 
         output = result.stdout.decode("utf-8", errors="replace")
         translations = {}
@@ -550,20 +579,41 @@ def translate_english_items(items: list[dict]):
             m = re.match(r"(\d+)\s*[:：．.\)）\-\>→]\s*(.+)", line.strip())
             if m:
                 translations[int(m.group(1))] = m.group(2).strip()
+        return translations
+    except Exception:
+        return {}
 
-        applied = 0
-        for idx, (i, _) in enumerate(en_items, 1):
-            if idx in translations:
-                items[i]["title_ja"] = translations[idx]
-                applied += 1
 
-        print(f"[翻訳] {applied}/{len(en_items)}件を翻訳完了")
-    except FileNotFoundError:
-        print("[翻訳] claude コマンドが見つかりません", file=sys.stderr)
-    except subprocess.TimeoutExpired:
-        print("[翻訳] タイムアウト（原文のまま出力）", file=sys.stderr)
-    except Exception as e:
-        print(f"[翻訳] エラー: {e}", file=sys.stderr)
+def translate_english_items(items: list[dict]):
+    """英語アイテムのタイトルを日本語翻訳（API優先、CLI fallback）"""
+    english_sources = {"hf_papers", "reddit", "youtube", "github_release", "anthropic"}
+    en_items = [
+        (i, item) for i, item in enumerate(items)
+        if item["source"] in english_sources and item.get("title")
+    ]
+    if not en_items:
+        return
+
+    titles = [item["title"] for _, item in en_items]
+    print(f"[翻訳] {len(en_items)}件の英語タイトルを日本語化中...")
+
+    # Anthropic API → Claude CLI の優先順で試行
+    translations = _translate_via_anthropic_api(titles)
+    if not translations:
+        print("[翻訳] API未設定、Claude CLIで翻訳を試行...", file=sys.stderr)
+        translations = _translate_via_claude_cli(titles)
+
+    if not translations:
+        print("[翻訳] 翻訳手段なし、原文のまま出力", file=sys.stderr)
+        return
+
+    applied = 0
+    for idx, (i, _) in enumerate(en_items, 1):
+        if idx in translations:
+            items[i]["title_ja"] = translations[idx]
+            applied += 1
+
+    print(f"[翻訳] {applied}/{len(en_items)}件を翻訳完了")
 
 
 def call_claude_cli(raw_text: str) -> str:

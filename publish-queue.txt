@@ -1,6 +1,6 @@
 # Zenn publish queue - one slug per line, top = next
 # Cron runs 4x/day (07:00, 12:00, 18:00, 21:00 JST), publishes 1 per run
-# 13 articles = ~3.25 days of content
+# 25 articles = ~6.25 days of content
 
 # High freshness - publish first
 kimi-k25-benchmark-cost-analysis
@@ -8,11 +8,27 @@ google-ai-plus-japan-gemini3
 gemini-3-agentic-vision-analysis
 ai-agent-parallel-coding-myth
 
-# Medium freshness - tech content
+# Medium freshness - tech content (existing)
 github-copilot-cli-practical-guide
 claude-discord-auto-tech-digest
 pytorch-cuda-windows-setup-2026
 3dgs-lazy-backward-optimization
+
+# Medium freshness - NEW batch (real experience)
+cuda-thread-local-pytorch-double-free
+cuda-shared-memory-48kb-tricks-2026
+pytorch-28-cuda-128-compatibility-2026
+rtx5090-sm120-cuda-migration-real
+multi-ai-agent-development-reality-2026
+git-worktree-parallel-ai-development
+zenn-github-actions-auto-publish-2026
+claude-code-hooks-recipes-2026
+wsl2-cuda-development-escape-windows
+
+# Medium freshness - 3DGS insights
+3dgs-training-loop-matters-more-2026
+360-camera-to-3dgs-pipeline-guide
+appearance-embedding-cheapest-psnr-boost
 
 # Lower freshness - evergreen
 3dgs-photometric-correction-guide
