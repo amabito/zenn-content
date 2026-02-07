@@ -1,9 +1,23 @@
 # Daily Tech Digest - Local runner for Windows Task Scheduler
-# Runs daily_tech_digest.py with translation (claude CLI)
+# Weekday 08:30, Weekend/Holiday 10:00
 
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
+
+# Holiday check: if weekday holiday, wait until 10:00
+$isHoliday = python -c "import jpholiday; from datetime import date; print('1' if jpholiday.is_holiday(date.today()) else '0')" 2>$null
+$isWeekday = (Get-Date).DayOfWeek -notin @('Saturday', 'Sunday')
+$now = Get-Date
+
+if ($isHoliday -eq '1' -and $isWeekday) {
+    $target = (Get-Date).Date.AddHours(10)
+    if ($now -lt $target) {
+        $wait = ($target - $now).TotalSeconds
+        Write-Host "[Digest] Holiday detected. Waiting until 10:00 ($([int]$wait)s)..."
+        Start-Sleep -Seconds ([int]$wait)
+    }
+}
 
 # Load .env.local
 $EnvFile = Join-Path $RepoRoot ".env.local"
