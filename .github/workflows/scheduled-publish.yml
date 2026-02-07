@@ -2,14 +2,23 @@ name: Scheduled Article Publishing
 
 on:
   schedule:
-    # 毎日朝7時（日本時間）に実行 = UTC 22:00
+    # JST 07:00 = UTC 22:00 (前日)
     - cron: '0 22 * * *'
+    # JST 12:00 = UTC 03:00
+    - cron: '0 3 * * *'
+    # JST 18:00 = UTC 09:00
+    - cron: '0 9 * * *'
+    # JST 21:00 = UTC 12:00
+    - cron: '0 12 * * *'
   workflow_dispatch:
     inputs:
       count:
-        description: '公開する記事数'
+        description: 'Number of articles to publish'
         required: false
-        default: '5'
+        default: '1'
+
+permissions:
+  contents: write
 
 jobs:
   publish:
@@ -24,14 +33,24 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Publish articles
+      - name: Publish next article from queue
+        run: python scripts/scheduled_publish.py ${{ github.event.inputs.count || '1' }}
+
+      - name: Check for changes
+        id: check
         run: |
-          python scripts/publish_articles.py ${{ github.event.inputs.count || '5' }}
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Install tweepy
+        if: steps.check.outputs.changed == 'true'
         run: pip install tweepy
 
       - name: Tweet new articles
+        if: steps.check.outputs.changed == 'true'
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
@@ -40,13 +59,10 @@ jobs:
         run: python scripts/tweet_new_articles.py
 
       - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add articles/ .tweeted-articles
-          if git diff --staged --quiet; then
-            echo "No articles to publish"
-          else
-            git commit -m "chore: 記事を自動公開 (scheduled)"
-            git push
-          fi
+          git add articles/ publish-queue.txt .tweeted-articles
+          git commit -m "chore: auto-publish article (scheduled)"
+          git push

@@ -1,0 +1,22 @@
+# Zenn publish queue - one slug per line, top = next
+# Cron runs 4x/day (07:00, 12:00, 18:00, 21:00 JST), publishes 1 per run
+# 13 articles = ~3.25 days of content
+
+# High freshness - publish first
+kimi-k25-benchmark-cost-analysis
+google-ai-plus-japan-gemini3
+gemini-3-agentic-vision-analysis
+ai-agent-parallel-coding-myth
+
+# Medium freshness - tech content
+github-copilot-cli-practical-guide
+claude-discord-auto-tech-digest
+pytorch-cuda-windows-setup-2026
+3dgs-lazy-backward-optimization
+
+# Lower freshness - evergreen
+3dgs-photometric-correction-guide
+3dgs-training-quality-checklist
+3dgs-commercial-license-guide-2026
+hyper-rasterizer-v11-backward-optimization
+reverse-order-backward-numerical-stability
