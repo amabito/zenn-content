@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-github-copilot-cli-practical-guide
 claude-discord-auto-tech-digest
 pytorch-cuda-windows-setup-2026
 3dgs-lazy-backward-optimization
