@@ -3,7 +3,7 @@ title: "OpenAI Prism完全ガイド：GPT-5.2搭載の無料論文執筆環境"
 emoji: "📝"
 type: "tech"
 topics: ["OpenAI", "Prism", "LaTeX", "論文", "GPT"]
-published: true
+published: false
 ---
 
 # 結論から言う

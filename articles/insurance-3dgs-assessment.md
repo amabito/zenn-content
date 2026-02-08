@@ -3,7 +3,7 @@ title: "保険損害査定3D化：再訪問コスト削減と不正検出の3DGS
 emoji: "🛡️"
 type: "tech"
 topics: ["3DGS", "保険", "損害査定", "InsurTech", "DX"]
-published: true
+published: false
 ---
 
 # 結論から言う

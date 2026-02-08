@@ -3,7 +3,7 @@ title: "WebGPU全ブラウザ対応完了：WebGL時代の終わりと3DGSへの
 emoji: "🌐"
 type: "tech"
 topics: ["WebGPU", "WebGL", "3DGS", "ブラウザ", "JavaScript"]
-published: true
+published: false
 ---
 
 # 結論から言う

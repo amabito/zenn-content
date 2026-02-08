@@ -3,7 +3,7 @@ title: "CUDA 12.8 Blackwell対応の全貌：sm_120開発者が知るべき新�
 emoji: "⚡"
 type: "tech"
 topics: ["CUDA", "Blackwell", "RTX5090", "GPU", "sm120"]
-published: true
+published: false
 ---
 
 # 結論から言う

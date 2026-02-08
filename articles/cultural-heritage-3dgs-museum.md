@@ -3,7 +3,7 @@ title: "文化財3Dアーカイブ：災害前に記録する3DGSデジタル保
 emoji: "🏛️"
 type: "tech"
 topics: ["3DGS", "文化財", "デジタルアーカイブ", "博物館", "デジタル保存"]
-published: true
+published: false
 ---
 
 # 結論から言う
