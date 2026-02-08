@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天人 - GPU/CUDA Engineer & AI Developer</title>
+    <meta name="description" content="GPU最適化、3D Gaussian Splatting、CUDA開発、AI自動化を専門とするエンジニアのポートフォリオ">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code, .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.6);
+        }
+
+        .skill-tag {
+            transition: all 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scale(1.05);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(102, 126, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+    <!-- Background Grid -->
+    <div class="fixed inset-0 bg-grid pointer-events-none"></div>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center px-4 py-20">
+        <div class="max-w-5xl mx-auto text-center z-10">
+            <!-- Profile Image Placeholder -->
+            <div class="mb-8 inline-block">
+                <div class="w-32 h-32 rounded-full gradient-border flex items-center justify-center float-animation">
+                    <svg class="w-20 h-20 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                <span class="gradient-text">天人</span>
+            </h1>
+
+            <p class="text-2xl md:text-3xl text-gray-300 mb-6 font-light">
+                GPU/CUDA Engineer & AI Developer
+            </p>
+
+            <p class="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+                高性能GPU最適化、3D Gaussian Splatting、CUDA開発、AI自動化を専門とするエンジニア。<br>
+                最先端技術で不可能を可能にします。
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="#contact" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg font-semibold hover:from-purple-500 hover:to-indigo-500 transition-all shadow-lg hover:shadow-xl">
+                    お問い合わせ
+                </a>
+                <a href="#works" class="px-8 py-3 gradient-border rounded-lg font-semibold hover:bg-purple-900/20 transition-all">
+                    実績を見る
+                </a>
+            </div>
+
+            <!-- Social Links -->
+            <div class="mt-12 flex gap-6 justify-center">
+                <a href="https://zenn.dev/amabito" target="_blank" class="text-gray-400 hover:text-purple-400 transition-colors" title="Zenn">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M.264 23.771h4.984c.264 0 .498-.147.645-.352L19.614.874c.176-.293-.029-.645-.381-.645h-4.72c-.235 0-.44.117-.557.323L.03 23.361c-.088.176-.029.41.234.41z"/>
+                    </svg>
+                </a>
+                <a href="https://github.com/amabito" target="_blank" class="text-gray-400 hover:text-purple-400 transition-colors" title="GitHub">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Skills Section -->
+    <section id="skills" class="relative py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 gradient-text">Technical Skills</h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- CUDA/GPU -->
+                <div class="gradient-border rounded-lg p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold">CUDA / GPU最適化</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        CUDA C++、カーネル最適化、メモリ最適化、Shared Memory、Warp最適化
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">CUDA 12.8</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">RTX 5090</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">Nsight</span>
+                    </div>
+                </div>
+
+                <!-- 3DGS -->
+                <div class="gradient-border rounded-lg p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold">3D Gaussian Splatting</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        HyperRasterizer、レンダリングパイプライン最適化、勾配計算高速化
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">HyperSplat</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">WebGPU</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">COLMAP</span>
+                    </div>
+                </div>
+
+                <!-- Python/AI -->
+                <div class="gradient-border rounded-lg p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold">Python / AI / LLM</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        PyTorch、AI自動化、LLMインテグレーション、Bot開発
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">PyTorch 2.8</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">Claude</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">GPT-4</span>
+                    </div>
+                </div>
+
+                <!-- WebGPU/Frontend -->
+                <div class="gradient-border rounded-lg p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold">WebGPU / Frontend</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        WebGPU、TypeScript、React、リアルタイム3Dレンダリング
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">WebGPU</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">TypeScript</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">React</span>
+                    </div>
+                </div>
+
+                <!-- System Development -->
+                <div class="gradient-border rounded-lg p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-red-500/20 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold">システム開発</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        C#/.NET、WPF、自動化ツール、Discord Bot開発
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">C# / .NET 8</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">WPF</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">PowerShell</span>
+                    </div>
+                </div>
+
+                <!-- DevOps -->
+                <div class="gradient-border rounded-lg p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold">DevOps / Infrastructure</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Docker、WSL2、Git、CI/CD、Windows/Linux環境構築
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">Docker</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">WSL2</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">Git</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Section -->
+    <section id="works" class="relative py-20 px-4 bg-gray-900/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 gradient-text">Featured Works</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- HyperRasterizer -->
+                <div class="gradient-border rounded-xl overflow-hidden card-hover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-semibold">CUDA</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-semibold">3DGS</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">HyperRasterizer</h3>
+                        <p class="text-gray-400 mb-4 leading-relaxed">
+                            3D Gaussian Splattingの高速CUDAラスタライザ。従来手法比20倍の高速化を達成。FP16対応、SoA最適化、Stream Compaction実装。
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">CUDA C++</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">PyTorch</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">Python</code>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <span class="pulse-glow">⚡</span> 86 it/s (従来4.3 it/s → 20x高速化)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HyperViewer -->
+                <div class="gradient-border rounded-xl overflow-hidden card-hover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-semibold">WebGPU</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-semibold">3DGS</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">HyperViewer</h3>
+                        <p class="text-gray-400 mb-4 leading-relaxed">
+                            ブラウザで動作する3DGSビューア。WebGPUコンピュートシェーダーによる高速ソート、Radix Sort実装、ドラッグ&ドロップでモデル読み込み。
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">TypeScript</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">WebGPU</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">React</code>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <span class="pulse-glow">🌐</span> ブラウザで60fps リアルタイムレンダリング
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SystemOverlay -->
+                <div class="gradient-border rounded-xl overflow-hidden card-hover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-semibold">C# / .NET</span>
+                            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm font-semibold">WPF</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">SystemOverlay</h3>
+                        <p class="text-gray-400 mb-4 leading-relaxed">
+                            Claude Code開発モニタリングツール。リアルタイムGPU/CPU/メモリ監視、透過オーバーレイ表示、.NET 8 WPF実装。
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">C# / .NET 8</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">WPF</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">XAML</code>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <span class="pulse-glow">📊</span> リアルタイムシステム監視
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zenn Articles -->
+                <div class="gradient-border rounded-xl overflow-hidden card-hover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm font-semibold">Technical Writing</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">技術記事執筆</h3>
+                        <p class="text-gray-400 mb-4 leading-relaxed">
+                            CUDA最適化、3DGS実装解説、GPU開発のベストプラクティス等、高度な技術トピックをわかりやすく解説。
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">Zenn</code>
+                            <code class="px-2 py-1 bg-gray-800 rounded text-xs mono text-purple-300">Markdown</code>
+                        </div>
+                        <a href="https://zenn.dev/amabito" target="_blank" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+                            Zennで記事を読む
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="relative py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 gradient-text">Services</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="gradient-border rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <span class="text-2xl">⚡</span>
+                        GPU/CUDA最適化コンサルティング
+                    </h3>
+                    <p class="text-gray-400">
+                        既存のGPUコードを10〜100倍高速化。ボトルネック分析、カーネル最適化、メモリアクセスパターン改善、Nsightプロファイリング。
+                    </p>
+                </div>
+
+                <div class="gradient-border rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <span class="text-2xl">🎨</span>
+                        3DGS処理・モデル生成
+                    </h3>
+                    <p class="text-gray-400">
+                        360°動画・写真から3D Gaussian Splattingモデル生成。COLMAP処理、訓練パイプライン構築、WebGPUビューア統合。
+                    </p>
+                </div>
+
+                <div class="gradient-border rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <span class="text-2xl">🤖</span>
+                        AI自動化・Bot開発
+                    </h3>
+                    <p class="text-gray-400">
+                        LLM統合による業務自動化、Discord Bot開発、Claude/GPT-4を活用したワークフロー構築、AI駆動型ツール開発。
+                    </p>
+                </div>
+
+                <div class="gradient-border rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <span class="text-2xl">💻</span>
+                        技術記事・ドキュメント作成
+                    </h3>
+                    <p class="text-gray-400">
+                        技術ブログ執筆、ドキュメント作成、チュートリアル開発。複雑な技術トピックをわかりやすく解説。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="relative py-20 px-4 bg-gray-900/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold gradient-text mb-2">20x</div>
+                    <div class="text-gray-400">高速化実績</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold gradient-text mb-2">50+</div>
+                    <div class="text-gray-400">CUDA最適化プロジェクト</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold gradient-text mb-2">32GB</div>
+                    <div class="text-gray-400">RTX 5090開発環境</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold gradient-text mb-2">24/7</div>
+                    <div class="text-gray-400">稼働可能</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="relative py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8 gradient-text">Contact</h2>
+
+            <p class="text-xl text-gray-300 mb-12">
+                GPU最適化、3DGS処理、AI自動化のご相談はお気軽にお問い合わせください。
+            </p>
+
+            <div class="gradient-border rounded-lg p-8 max-w-2xl mx-auto">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-center gap-3 text-lg">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <a href="mailto:your.email@example.com" class="text-purple-400 hover:text-purple-300 transition-colors">
+                            your.email@example.com
+                        </a>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-3 text-lg">
+                        <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M.264 23.771h4.984c.264 0 .498-.147.645-.352L19.614.874c.176-.293-.029-.645-.381-.645h-4.72c-.235 0-.44.117-.557.323L.03 23.361c-.088.176-.029.41.234.41z"/>
+                        </svg>
+                        <a href="https://zenn.dev/amabito" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors">
+                            Zenn: @amabito
+                        </a>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-3 text-lg">
+                        <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                        <a href="https://github.com/amabito" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors">
+                            GitHub: @amabito
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-gray-700">
+                    <p class="text-gray-400 text-sm">
+                        レスポンス時間: 通常24時間以内<br>
+                        対応言語: 日本語、English
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-12 px-4 bg-gray-900/80 border-t border-gray-800">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-gray-400 mb-4">
+                &copy; 2026 天人 (Amabito). All rights reserved.
+            </p>
+            <p class="text-gray-500 text-sm">
+                Built with Tailwind CSS | Powered by RTX 5090
+            </p>
+        </div>
+    </footer>
+
+    <!-- Smooth Scroll Script -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
