@@ -3,7 +3,7 @@ title: "Google AI Plus日本上陸：月額1,200円で何ができるか"
 emoji: "🌏"
 type: "tech"
 topics: ["Google", "Gemini", "AI", "サブスク", "日本"]
-published: false
+published: true
 ---
 
 # 結論から言う

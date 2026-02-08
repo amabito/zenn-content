@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-google-ai-plus-japan-gemini3
 gemini-3-agentic-vision-analysis
 ai-agent-parallel-coding-myth
 github-copilot-cli-practical-guide
@@ -23,7 +22,6 @@ appearance-embedding-cheapest-psnr-boost
 3dgs-commercial-license-guide-2026
 hyper-rasterizer-v11-backward-optimization
 reverse-order-backward-numerical-stability
-# Re-queued from Zenn rate limit (29 articles)
 splat-portrait-3dgs-talking-head-2026
 potr-3dgs-compression-post-training-2026
 nvidia-ppisp-3dgs-photometric
