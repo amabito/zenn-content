@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-gemini-3-agentic-vision-analysis
 ai-agent-parallel-coding-myth
 github-copilot-cli-practical-guide
 claude-discord-auto-tech-digest

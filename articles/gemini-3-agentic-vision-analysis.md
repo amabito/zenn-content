@@ -3,7 +3,7 @@ title: "Gemini 3 Agentic Vision解析：AIが画像を能動的に理解する�
 emoji: "👁️"
 type: "tech"
 topics: ["Gemini", "Google", "ComputerVision", "AI", "画像認識"]
-published: false
+published: true
 ---
 
 # 結論から言う
