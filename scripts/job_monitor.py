@@ -85,7 +85,7 @@ def fetch_lancers(seen_set: set) -> list[dict]:
         try:
             search_url = (
                 f"https://www.lancers.jp/work/search/system"
-                f"?keyword={quote(query)}&sort=started"
+                f"?keyword={quote(query)}&sort=started&open=1"
             )
             print(f"  [Lancers] 検索: {query}...", file=sys.stderr)
 
@@ -96,6 +96,7 @@ def fetch_lancers(seen_set: set) -> list[dict]:
             resp.encoding = "utf-8"
             html = resp.text
 
+            # Split HTML into job card blocks to check each card's context
             for m in re.finditer(
                 r'<a\s[^>]*href="(/work/detail/(\d+))"[^>]*>(.*?)</a>',
                 html,
@@ -111,6 +112,16 @@ def fetch_lancers(seen_set: set) -> list[dict]:
 
                 job_id = f"la_{job_num}"
                 if job_id in seen_set:
+                    continue
+
+                # Check surrounding context for closed indicators
+                start = max(0, m.start() - 500)
+                end = min(len(html), m.end() + 500)
+                context = html[start:end]
+                if re.search(
+                    r"募集終了|終了しました|受付終了|キャンセル",
+                    context,
+                ):
                     continue
 
                 job_url = f"https://www.lancers.jp{path}"

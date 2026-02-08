@@ -153,6 +153,22 @@ def fetch_job_detail(job_id: str, url: str) -> Optional[dict]:
         return None
 
 
+def is_job_closed(html: str) -> bool:
+    """Check if a Lancers job posting is closed/expired/cancelled."""
+    closed_patterns = [
+        r"この募集は.*?終了しました",
+        r"募集終了",
+        r"プロジェクトをキャンセル",
+        r"募集期間が終了",
+        r"この案件は終了",
+        r"受付終了",
+    ]
+    for pattern in closed_patterns:
+        if re.search(pattern, html, re.IGNORECASE):
+            return True
+    return False
+
+
 def _parse_lancers_detail(html: str) -> dict:
     """Extract description, budget, and deadline from Lancers detail page HTML."""
     description = ""
@@ -727,6 +743,26 @@ def cmd_scan() -> None:
         except Exception as e:
             print(f"  [{job_id}] ページ取得失敗: {e}", file=sys.stderr)
 
+        # Skip closed/expired jobs before wasting Claude API calls
+        if prefetched_html and is_job_closed(prefetched_html):
+            now_iso = datetime.now(JST).isoformat()
+            job_data_closed: dict[str, Any] = {
+                "id": job_id,
+                "title": title,
+                "url": url,
+                "status": "skipped",
+                "score": 0,
+                "evaluation": {"reason": "募集終了済み"},
+                "found_at": now_iso,
+            }
+            pipeline_jobs[job_id] = job_data_closed
+            skipped_jobs.append(job_data_closed)
+            print(f"  -> スキップ (募集終了済み)")
+            processed += 1
+            if processed < len(new_ids):
+                time.sleep(REQUEST_DELAY)
+            continue
+
         # Evaluate the job (reuse fetched HTML to avoid double request)
         job_data = evaluate_job(
             job_id, title, url, prefetched_html=prefetched_html
@@ -857,6 +893,22 @@ def cmd_build(job_id: str) -> None:
         if confirm != "y":
             print("[Pipeline] 中止")
             return
+
+    # Verify job is still open before building
+    try:
+        resp = requests.get(
+            job["url"], timeout=15, headers={"User-Agent": USER_AGENT}
+        )
+        resp.raise_for_status()
+        resp.encoding = "utf-8"
+        if is_job_closed(resp.text):
+            print(f"[Pipeline] エラー: {job_id} は募集終了済みです。ビルドを中止します。")
+            job["status"] = "skipped"
+            job["evaluation"] = {**job.get("evaluation", {}), "reason": "募集終了済み"}
+            save_pipeline_state(pipeline_state)
+            return
+    except Exception as e:
+        print(f"[Pipeline] 警告: 案件ステータス確認に失敗 ({e})", file=sys.stderr)
 
     # Create workspace
     workspace = FREELANCE_WORKSPACE_ROOT / job_id
