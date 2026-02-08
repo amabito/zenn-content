@@ -2,16 +2,20 @@
 """
 Lancers Message Monitor - Check for new messages and notify via Discord
 
-Monitors the Lancers inbox for unread messages and sends
-Discord webhook notifications for any new ones.
+Monitors the Lancers inbox for unread messages and proposal status,
+then sends Discord webhook notifications for any new activity.
 
 Usage:
-  python scripts/lancers_message_monitor.py           # Check + notify
-  python scripts/lancers_message_monitor.py --dry-run  # Check only, no Discord
+  python scripts/lancers_message_monitor.py --setup    # First-time login (opens browser)
+  python scripts/lancers_message_monitor.py             # Check + notify (headless)
+  python scripts/lancers_message_monitor.py --dry-run   # Check only, no Discord
+
+Authentication:
+  Uses Playwright persistent browser context.
+  Run --setup first to log into Lancers (Google OAuth supported).
+  Session is saved and reused automatically.
 
 Environment:
-  LANCERS_EMAIL        - Lancers login email (required)
-  LANCERS_PASSWORD     - Lancers login password (required)
   DISCORD_WEBHOOK_URL  - Discord Webhook URL (required, unless --dry-run)
 """
 
@@ -23,7 +27,6 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
 
 if sys.platform == "win32":
     sys.stdout = io.TextIOWrapper(
@@ -42,19 +45,17 @@ import requests
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = SCRIPT_DIR.parent
 STATE_FILE = REPO_ROOT / ".lancers-message-state.json"
+AUTH_DIR = Path.home() / ".lancers-auth"
 
 JST = timezone(timedelta(hours=9))
 EMBED_COLOR = 0x00CC66
 
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-)
-
-LOGIN_URL = "https://www.lancers.jp/user/login"
 MYPAGE_URL = "https://www.lancers.jp/mypage"
-MESSAGE_URL = "https://www.lancers.jp/mypage/message"
-PROPOSAL_URL = "https://www.lancers.jp/mypage/proposal"
+MESSAGE_URL = "https://www.lancers.jp/message"
+PROPOSAL_URL = "https://www.lancers.jp/mypage/proposals"
+LOGIN_URL = "https://www.lancers.jp/user/login"
+
+PAGE_TIMEOUT_MS = 30_000
 
 # ---------------------------------------------------------------------------
 # State Management
@@ -81,99 +82,101 @@ def save_state(state: dict) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Lancers Session
+# Playwright Auth
 # ---------------------------------------------------------------------------
 
 
-def create_lancers_session(email: str, password: str) -> Optional[requests.Session]:
-    """Login to Lancers and return an authenticated session."""
-    session = requests.Session()
-    session.headers.update({"User-Agent": USER_AGENT})
+def setup_login() -> bool:
+    """Open a visible browser for user to log into Lancers.
 
-    try:
-        # Step 1: GET login page to obtain CSRF token
-        print("[Login] ログインページを取得中...", file=sys.stderr)
-        resp = session.get(LOGIN_URL, timeout=15)
-        resp.raise_for_status()
-        resp.encoding = "utf-8"
+    Saves the session to AUTH_DIR for later headless use.
+    Supports Google OAuth login flow.
+    """
+    from playwright.sync_api import sync_playwright
 
-        # Extract CSRF token (_token or authenticity_token)
-        token = None
-        token_patterns = [
-            r'name="_token"\s+value="([^"]+)"',
-            r'name="authenticity_token"\s+value="([^"]+)"',
-            r'"_token"\s*:\s*"([^"]+)"',
-            r'name="csrf[_-]token"\s+content="([^"]+)"',
-            r'<meta\s+name="csrf-token"\s+content="([^"]+)"',
-        ]
-        for pattern in token_patterns:
-            match = re.search(pattern, resp.text, re.IGNORECASE)
-            if match:
-                token = match.group(1)
-                break
+    AUTH_DIR.mkdir(parents=True, exist_ok=True)
 
-        # Step 2: POST login credentials
-        print("[Login] ログイン中...", file=sys.stderr)
-        login_data = {
-            "email": email,
-            "password": password,
-        }
-        if token:
-            login_data["_token"] = token
+    print("[Setup] ブラウザを起動します。Lancersにログインしてください。")
+    print("[Setup] Google OAuthログインもサポートしています。")
+    print("[Setup] ログイン完了後、ブラウザを閉じてください。\n")
 
-        resp = session.post(
-            LOGIN_URL,
-            data=login_data,
-            timeout=15,
-            allow_redirects=True,
+    with sync_playwright() as p:
+        context = p.chromium.launch_persistent_context(
+            user_data_dir=str(AUTH_DIR),
+            channel="chrome",  # Use real Chrome (not Chromium) for Google OAuth
+            headless=False,
+            locale="ja-JP",
+            viewport={"width": 1280, "height": 900},
+            args=["--disable-blink-features=AutomationControlled"],
         )
 
-        # Check if login succeeded by looking for mypage redirect or user menu
-        if "logout" in resp.text.lower() or "mypage" in resp.url:
-            print("[Login] ログイン成功", file=sys.stderr)
-            return session
+        page = context.pages[0] if context.pages else context.new_page()
+        page.goto(LOGIN_URL, timeout=PAGE_TIMEOUT_MS)
 
-        # Check for error messages
-        if "メールアドレスまたはパスワードが正しくありません" in resp.text:
-            print("[Login] エラー: メールアドレスまたはパスワードが正しくありません", file=sys.stderr)
-            return None
+        # Poll until user reaches mypage or closes browser (no stdin needed)
+        print("[Setup] ログイン待機中... (マイページ到達で自動完了、またはブラウザを閉じてください)")
+        logged_in = False
+        for _ in range(600):  # 10 min max
+            time.sleep(1)
+            try:
+                if page.is_closed():
+                    break
+                current_url = page.url
+                if "mypage" in current_url:
+                    logged_in = True
+                    print("[Setup] ログイン成功!")
+                    time.sleep(2)  # Let cookies settle
+                    break
+            except Exception:
+                break
 
-        # Try accessing mypage to verify
-        resp = session.get(MYPAGE_URL, timeout=15, allow_redirects=True)
-        if "login" in resp.url:
-            print("[Login] エラー: ログインに失敗しました（リダイレクト）", file=sys.stderr)
-            return None
+        if not logged_in:
+            print("[Setup] ログインが確認できませんでした。")
+            print("[Setup] ブラウザでログイン後、再度 --setup を実行してください。")
 
-        print("[Login] ログイン成功（マイページ確認）", file=sys.stderr)
-        return session
+        try:
+            context.close()
+        except Exception:
+            pass
 
-    except Exception as e:
-        print(f"[Login] 例外: {e}", file=sys.stderr)
-        return None
+    print("[Setup] セッション保存完了")
+    print(f"[Setup] 保存先: {AUTH_DIR}")
+    return True
+
+
+def is_logged_in(page) -> bool:
+    """Check if the current page shows a logged-in state."""
+    url = page.url
+    if "login" in url:
+        return False
+
+    content = page.content()
+    if "logout" in content.lower() or "マイページ" in content:
+        return True
+
+    return "login" not in url
 
 
 # ---------------------------------------------------------------------------
-# Message Checking
+# Message Checking (Playwright)
 # ---------------------------------------------------------------------------
 
 
-def check_messages(session: requests.Session) -> list[dict]:
-    """Check for unread messages in the inbox."""
+def check_messages_pw(page) -> list[dict]:
+    """Check for messages using Playwright page."""
     messages = []
 
     try:
         print("[Messages] メッセージ一覧を取得中...", file=sys.stderr)
-        resp = session.get(MESSAGE_URL, timeout=15)
-        resp.raise_for_status()
-        resp.encoding = "utf-8"
-        html = resp.text
+        page.goto(MESSAGE_URL, timeout=PAGE_TIMEOUT_MS, wait_until="domcontentloaded")
+        time.sleep(3)
+        html = page.content()
 
-        # Parse message list items
-        # Look for message board entries with unread indicators
+        # Parse message threads from /message page
+        # Lancers uses /mypage/message/?userId=X&workId=Y or /message/boardId patterns
         msg_patterns = [
-            # Message board links with IDs
-            r'<a[^>]*href="(/mypage/message\?boardId=(\d+))"[^>]*>(.*?)</a>',
-            r'<a[^>]*href="(/message/(\d+))"[^>]*>(.*?)</a>',
+            r'<a[^>]*href="(/mypage/message/?\?[^"]*(?:boardId|userId)=(\d+)[^"]*)"[^>]*>(.*?)</a>',
+            r'<a[^>]*href="(/message[^"]*(?:boardId|userId)=(\d+)[^"]*)"[^>]*>(.*?)</a>',
         ]
 
         for pattern in msg_patterns:
@@ -187,22 +190,45 @@ def check_messages(session: requests.Session) -> list[dict]:
                     continue
 
                 url = f"https://www.lancers.jp{path}"
-                messages.append({
-                    "id": f"msg_{msg_id}",
-                    "title": inner[:100],
-                    "url": url,
-                    "type": "message",
-                })
+                messages.append(
+                    {
+                        "id": f"msg_{msg_id}",
+                        "title": inner[:100],
+                        "url": url,
+                        "type": "message",
+                    }
+                )
 
-        # Also check for unread badge count
-        unread_match = re.search(
-            r'(?:未読|unread)[^<]*?(\d+)',
-            html,
-            re.IGNORECASE,
-        )
-        if unread_match:
-            count = int(unread_match.group(1))
-            print(f"[Messages] 未読メッセージ: {count}件", file=sys.stderr)
+        # Also check dashboard for message indicators
+        if not messages:
+            page.goto(MYPAGE_URL, timeout=PAGE_TIMEOUT_MS, wait_until="domcontentloaded")
+            time.sleep(2)
+            dash_html = page.content()
+
+            # Dashboard has message links like /mypage/message/?userId=X&workId=Y
+            for m in re.finditer(
+                r'<a[^>]*href="(/mypage/message/?\?[^"]*workId=(\d+)[^"]*)"[^>]*>(.*?)</a>',
+                dash_html,
+                re.DOTALL,
+            ):
+                path = m.group(1).replace("&amp;", "&")
+                work_id = m.group(2)
+                inner = re.sub(r"<[^>]+>", " ", m.group(3)).strip()
+                inner = re.sub(r"\s+", " ", inner).strip()
+                if not inner:
+                    inner = f"Work #{work_id} message"
+
+                url = f"https://www.lancers.jp{path}"
+                messages.append(
+                    {
+                        "id": f"msg_w{work_id}",
+                        "title": inner[:100],
+                        "url": url,
+                        "type": "message",
+                    }
+                )
+
+        print(f"[Messages] 検出: {len(messages)}件", file=sys.stderr)
 
     except Exception as e:
         print(f"[Messages] エラー: {e}", file=sys.stderr)
@@ -210,54 +236,67 @@ def check_messages(session: requests.Session) -> list[dict]:
     return messages
 
 
-def check_proposals(session: requests.Session) -> list[dict]:
-    """Check for proposal status updates (accepted, rejected, etc.)."""
+def check_proposals_pw(page) -> list[dict]:
+    """Check for proposal status updates using Playwright page."""
     proposals = []
 
     try:
         print("[Proposals] 提案状況を確認中...", file=sys.stderr)
-        resp = session.get(PROPOSAL_URL, timeout=15)
-        resp.raise_for_status()
-        resp.encoding = "utf-8"
-        html = resp.text
+        page.goto(PROPOSAL_URL, timeout=PAGE_TIMEOUT_MS, wait_until="domcontentloaded")
+        time.sleep(3)
+        html = page.content()
 
-        # Look for proposal entries with status changes
-        proposal_patterns = [
-            r'<a[^>]*href="(/work/detail/(\d+)[^"]*)"[^>]*>(.*?)</a>',
-        ]
+        # Lancers proposal list: <a class="c-link c-link--black" href="/work/detail/{id}">title</a>
+        # Inside <li class="p-mypage-work__media c-media-job">
+        for m in re.finditer(
+            r'<a[^>]*href="/work/detail/(\d+)"[^>]*>\s*(.*?)\s*</a>',
+            html,
+            re.DOTALL,
+        ):
+            job_id = m.group(1)
+            title = re.sub(r"<[^>]+>", " ", m.group(2)).strip()
+            title = re.sub(r"\s+", " ", title).strip()
 
-        for pattern in proposal_patterns:
-            for m in re.finditer(pattern, html, re.DOTALL):
-                path = m.group(1)
-                job_id = m.group(2)
-                inner = re.sub(r"<[^>]+>", " ", m.group(3)).strip()
-                inner = re.sub(r"\s+", " ", inner).strip()
+            if not title or len(title) < 5:
+                continue
 
-                if not inner or len(inner) < 5:
-                    continue
+            url = f"https://www.lancers.jp/work/detail/{job_id}"
 
-                url = f"https://www.lancers.jp{path}"
+            # Check surrounding <li> block for status
+            start = max(0, m.start() - 1000)
+            end = min(len(html), m.end() + 2000)
+            context = html[start:end]
 
-                # Check surrounding context for status indicators
-                start = max(0, m.start() - 300)
-                end = min(len(html), m.end() + 300)
-                context = html[start:end]
+            status = "pending"
+            if re.search(r"c-media-job__status--active", context):
+                # Active status - check the text
+                status_match = re.search(
+                    r'c-media-job__status--active[^>]*>.*?<span>(.*?)</span>',
+                    context,
+                    re.DOTALL,
+                )
+                if status_match:
+                    status_text = status_match.group(1).strip()
+                    status_text = re.sub(r"<[^>]+>", "", status_text).strip()
+                    if status_text:
+                        status = f"active:{status_text}"
 
-                status = "unknown"
-                if re.search(r"選定|当選|採用|受注", context):
-                    status = "accepted"
-                elif re.search(r"落選|不採用|辞退", context):
-                    status = "rejected"
-                elif re.search(r"提案中|検討中", context):
-                    status = "pending"
+            if re.search(r"選定|当選|採用|受注", context):
+                status = "accepted"
+            elif re.search(r"落選|不採用|辞退|キャンセル", context):
+                status = "rejected"
 
-                proposals.append({
+            proposals.append(
+                {
                     "id": f"prop_{job_id}",
-                    "title": inner[:100],
+                    "title": title[:100],
                     "url": url,
                     "type": "proposal",
                     "status": status,
-                })
+                }
+            )
+
+        print(f"[Proposals] 検出: {len(proposals)}件", file=sys.stderr)
 
     except Exception as e:
         print(f"[Proposals] エラー: {e}", file=sys.stderr)
@@ -281,13 +320,13 @@ def notify_discord(items: list[dict]) -> None:
     lines = []
 
     for item in items[:15]:
-        emoji = "💬" if item["type"] == "message" else "📋"
+        emoji = "\U0001f4ac" if item["type"] == "message" else "\U0001f4cb"
         status_text = ""
         if item.get("status") == "accepted":
-            emoji = "🎉"
+            emoji = "\U0001f389"
             status_text = " **【受注！】**"
         elif item.get("status") == "rejected":
-            emoji = "❌"
+            emoji = "\u274c"
             status_text = " （落選）"
 
         title = item["title"][:80]
@@ -296,7 +335,7 @@ def notify_discord(items: list[dict]) -> None:
     description = "\n".join(lines)
 
     payload = {
-        "username": "📨 Lancers通知",
+        "username": "\U0001f4e8 Lancers通知",
         "embeds": [
             {
                 "title": f"Lancers新着通知 ({len(items)}件)",
@@ -329,17 +368,20 @@ def notify_discord(items: list[dict]) -> None:
 
 
 def main() -> None:
+    setup_mode = "--setup" in sys.argv
     dry_run = "--dry-run" in sys.argv
 
-    email = os.environ.get("LANCERS_EMAIL")
-    password = os.environ.get("LANCERS_PASSWORD")
+    if setup_mode:
+        setup_login()
+        return
 
-    if not email or not password:
-        print(
-            "エラー: LANCERS_EMAIL と LANCERS_PASSWORD を環境変数に設定してください",
-            file=sys.stderr,
-        )
+    # Verify auth directory exists
+    if not AUTH_DIR.exists():
+        print("[Monitor] 初回セットアップが必要です。")
+        print("[Monitor] 実行: python scripts/lancers_message_monitor.py --setup")
         sys.exit(1)
+
+    from playwright.sync_api import sync_playwright
 
     print(f"[Monitor] 開始: {datetime.now(JST).strftime('%Y/%m/%d %H:%M')}")
 
@@ -350,23 +392,41 @@ def main() -> None:
     seen_msg_ids = set(state.get("seen_message_ids", []))
     seen_prop_ids = set(state.get("seen_proposal_ids", []))
 
-    # Login
-    session = create_lancers_session(email, password)
-    if not session:
-        print("[Monitor] ログイン失敗、終了", file=sys.stderr)
-        sys.exit(1)
+    with sync_playwright() as p:
+        context = p.chromium.launch_persistent_context(
+            user_data_dir=str(AUTH_DIR),
+            channel="chrome",
+            headless=True,
+            locale="ja-JP",
+            args=["--disable-blink-features=AutomationControlled"],
+        )
 
-    time.sleep(1)
+        page = context.pages[0] if context.pages else context.new_page()
 
-    # Check messages
-    messages = check_messages(session)
-    new_messages = [m for m in messages if m["id"] not in seen_msg_ids]
+        # Verify we're still logged in
+        print("[Auth] セッション確認中...", file=sys.stderr)
+        page.goto(MYPAGE_URL, timeout=PAGE_TIMEOUT_MS, wait_until="domcontentloaded")
+        time.sleep(2)
 
-    time.sleep(1)
+        if not is_logged_in(page):
+            print("[Auth] セッション期限切れ。再ログインが必要です。", file=sys.stderr)
+            print("[Auth] 実行: python scripts/lancers_message_monitor.py --setup")
+            context.close()
+            sys.exit(1)
 
-    # Check proposals
-    proposals = check_proposals(session)
-    new_proposals = [p for p in proposals if p["id"] not in seen_prop_ids]
+        print("[Auth] 認証OK", file=sys.stderr)
+
+        # Check messages
+        messages = check_messages_pw(page)
+        new_messages = [m for m in messages if m["id"] not in seen_msg_ids]
+
+        time.sleep(1)
+
+        # Check proposals
+        proposals = check_proposals_pw(page)
+        new_proposals = [p for p in proposals if p["id"] not in seen_prop_ids]
+
+        context.close()
 
     # Combine new items
     new_items = new_messages + new_proposals
@@ -376,7 +436,7 @@ def main() -> None:
 
     if new_items:
         for item in new_items:
-            emoji = "💬" if item["type"] == "message" else "📋"
+            emoji = "\U0001f4ac" if item["type"] == "message" else "\U0001f4cb"
             print(f"  {emoji} {item['title'][:60]}")
             print(f"    {item['url']}")
 
@@ -390,8 +450,8 @@ def main() -> None:
     # Update seen IDs
     for m in messages:
         seen_msg_ids.add(m["id"])
-    for p in proposals:
-        seen_prop_ids.add(p["id"])
+    for p_item in proposals:
+        seen_prop_ids.add(p_item["id"])
 
     state["seen_message_ids"] = list(seen_msg_ids)
     state["seen_proposal_ids"] = list(seen_prop_ids)
