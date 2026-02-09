@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-3dgs-lazy-backward-optimization
 cuda-thread-local-pytorch-double-free
 cuda-shared-memory-48kb-tricks-2026
 pytorch-28-cuda-128-compatibility-2026
