@@ -40,6 +40,7 @@ cuda-debug-atomic-performance-trap
 cuda-memory-management
 cuda-memory-management-paid
 cuda-optimization-basics
+cuda-thread-local-pytorch-double-free
 cuda-warp-sync-trap
 cuda-warp-sync-trap-paid
 cultural-heritage-3dgs-museum
