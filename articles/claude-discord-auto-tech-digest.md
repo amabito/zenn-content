@@ -3,7 +3,7 @@ title: "Claude Code+Discordで毎朝AIニュースを自動配信する仕組み
 emoji: "📡"
 type: "tech"
 topics: ["ClaudeCode", "Discord", "Python", "自動化", "AI"]
-published: false
+published: true
 ---
 
 # 結論から言う

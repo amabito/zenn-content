@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-claude-discord-auto-tech-digest
 pytorch-cuda-windows-setup-2026
 3dgs-lazy-backward-optimization
 cuda-thread-local-pytorch-double-free
