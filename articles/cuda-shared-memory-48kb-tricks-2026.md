@@ -3,7 +3,7 @@ title: "CUDA共有メモリ48KB制限を突破する3つのテクニック【実
 emoji: "🧠"
 type: "tech"
 topics: ["CUDA", "GPU", "パフォーマンス最適化", "共有メモリ"]
-published: false
+published: true
 ---
 
 ## TL;DR
