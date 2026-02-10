@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-pytorch-28-cuda-128-compatibility-2026
 rtx5090-sm120-cuda-migration-real
 multi-ai-agent-development-reality-2026
 git-worktree-parallel-ai-development

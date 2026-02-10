@@ -79,6 +79,7 @@ nvidia-ppisp-3dgs-photometric
 openai-prism-latex-writing-guide
 potr-3dgs-compression-post-training-2026
 pytorch-210-cuda-blackwell
+pytorch-28-cuda-128-compatibility-2026
 pytorch-cuda-extension
 pytorch-cuda-extension-paid
 pytorch-cuda-windows-setup-2026

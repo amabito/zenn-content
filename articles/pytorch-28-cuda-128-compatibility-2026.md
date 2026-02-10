@@ -3,7 +3,7 @@ title: "PyTorch 2.8 + CUDA 12.8 互換性問題まとめ【2026年版トラブ�
 emoji: "🔧"
 type: "tech"
 topics: ["PyTorch", "CUDA", "環境構築", "トラブルシューティング"]
-published: false
+published: true
 ---
 
 ## TL;DR
