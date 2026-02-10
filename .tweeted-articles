@@ -88,6 +88,7 @@ realestate-3dgs-paid
 rtx5090-blackwell-optimization-2026
 rtx5090-cuda-optimization
 rtx5090-cuda-optimization-paid
+rtx5090-sm120-cuda-migration-real
 rtx5090-sm120-migration-guide
 rtx5090-vs-rtx4090
 small-construction-survival

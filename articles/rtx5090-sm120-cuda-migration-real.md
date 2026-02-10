@@ -3,7 +3,7 @@ title: "RTX 5090 (sm_120) CUDA移行の実体験：Blackwellで変わったこ�
 emoji: "⚡"
 type: "tech"
 topics: ["RTX5090", "CUDA", "Blackwell", "GPU"]
-published: false
+published: true
 ---
 
 ## はじめに
