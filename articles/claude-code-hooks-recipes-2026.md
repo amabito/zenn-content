@@ -3,7 +3,7 @@ title: "Claude Code Hooks実践レシピ10選：自動レビュー・テスト�
 emoji: "🪝"
 type: "tech"
 topics: ["ClaudeCode", "自動化", "AI開発", "Hooks"]
-published: false
+published: true
 ---
 
 ## はじめに
