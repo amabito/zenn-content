@@ -3,7 +3,7 @@ title: "WSL2でCUDA開発：Windows MSVCの地獄から脱出する完全ガイ�
 emoji: "🐧"
 type: "tech"
 topics: ["WSL2", "CUDA", "Windows", "開発環境"]
-published: false
+published: true
 ---
 
 ## はじめに

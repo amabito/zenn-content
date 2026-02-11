@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-wsl2-cuda-development-escape-windows
 3dgs-training-loop-matters-more-2026
 360-camera-to-3dgs-pipeline-guide
 appearance-embedding-cheapest-psnr-boost
