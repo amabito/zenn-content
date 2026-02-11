@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-git-worktree-parallel-ai-development
 zenn-github-actions-auto-publish-2026
 claude-code-hooks-recipes-2026
 wsl2-cuda-development-escape-windows
