@@ -3,7 +3,7 @@ title: "ZennをGitHub Actionsで完全自動化：キュー式スケジュール
 emoji: "🤖"
 type: "tech"
 topics: ["Zenn", "GitHubActions", "自動化", "ブログ"]
-published: false
+published: true
 ---
 
 ## はじめに
