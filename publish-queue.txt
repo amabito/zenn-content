@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-3dgs-photometric-correction-guide
 3dgs-training-quality-checklist
 3dgs-commercial-license-guide-2026
 hyper-rasterizer-v11-backward-optimization

@@ -3,7 +3,7 @@ title: "3DGSフォトメトリック補正入門：4つの手法を徹底比較"
 emoji: "📸"
 type: "tech"
 topics: ["3DGS", "CUDA", "ComputerVision", "NVIDIA", "画像処理"]
-published: false
+published: true
 ---
 
 # 結論から言う
