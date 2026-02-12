@@ -3,7 +3,7 @@ title: "360°カメラ映像から3DGSモデルを作る完全ガイド【Equire
 emoji: "📷"
 type: "tech"
 topics: ["3DGS", "360度カメラ", "COLMAP", "3D再構成"]
-published: false
+published: true
 ---
 
 ## はじめに
