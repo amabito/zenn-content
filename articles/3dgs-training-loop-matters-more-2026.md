@@ -3,7 +3,7 @@ title: "3DGSの品質はラスタライザーではなく学習ループで決�
 emoji: "📊"
 type: "tech"
 topics: ["3DGS", "機械学習", "GaussianSplatting", "品質改善"]
-published: false
+published: true
 ---
 
 ## はじめに
