@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-appearance-embedding-cheapest-psnr-boost
 3dgs-photometric-correction-guide
 3dgs-training-quality-checklist
 3dgs-commercial-license-guide-2026
