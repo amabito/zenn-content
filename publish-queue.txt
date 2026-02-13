@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-3dgs-commercial-license-guide-2026
 hyper-rasterizer-v11-backward-optimization
 reverse-order-backward-numerical-stability
 splat-portrait-3dgs-talking-head-2026
