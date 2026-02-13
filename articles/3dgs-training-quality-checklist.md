@@ -3,7 +3,7 @@ title: "3DGS学習の品質を上げる実践チェックリスト30項目"
 emoji: "✅"
 type: "tech"
 topics: ["3DGS", "機械学習", "CUDA", "品質管理", "学習"]
-published: false
+published: true
 ---
 
 # 結論から言う
