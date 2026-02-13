@@ -3,7 +3,7 @@ title: "3DGSラスタライザで10dB PSNR差を解消した4つの最適化【H
 emoji: "🔬"
 type: "tech"
 topics: ["3DGS", "CUDA", "機械学習", "最適化", "CG"]
-published: false
+published: true
 ---
 
 # 結論から言う
