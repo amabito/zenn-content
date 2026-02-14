@@ -3,7 +3,7 @@ title: "Splat-Portrait：3DGSで音声からTalking Head生成【2026年最新�
 emoji: "🗣️"
 type: "tech"
 topics: ["3DGS", "AI", "音声合成", "ComputerVision", "アバター"]
-published: false
+published: true
 ---
 
 # 結論から言う
