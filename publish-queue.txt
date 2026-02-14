@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-potr-3dgs-compression-post-training-2026
 nvidia-ppisp-3dgs-photometric
 rtx5090-blackwell-optimization-2026
 rtx5090-sm120-migration-guide
