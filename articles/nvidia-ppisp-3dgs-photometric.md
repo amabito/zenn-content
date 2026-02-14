@@ -3,7 +3,7 @@ title: "NVIDIAが公開したPPISP：3DGSの色ズレを物理ベースで解決
 emoji: "📷"
 type: "tech"
 topics: ["3DGS", "CUDA", "NVIDIA", "ComputerVision", "画像処理"]
-published: false
+published: true
 ---
 
 # 結論から言う
