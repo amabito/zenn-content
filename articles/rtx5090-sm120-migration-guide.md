@@ -3,7 +3,7 @@ title: "RTX 5090 sm_120移行ガイド：Blackwell対応の全手順"
 emoji: "⚡"
 type: "tech"
 topics: ["RTX5090", "CUDA", "GPU", "Blackwell", "sm120"]
-published: false
+published: true
 ---
 
 # 結論から言う
