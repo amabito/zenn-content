@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-ai-coding-tools-comparison-2026
 windows-cuda-pytorch-setup-2026
 windows-cuda-env-setup-complete-2026
 claude-code-automation-workflow
