@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-windows-cuda-env-setup-complete-2026
 claude-code-automation-workflow
 claude-code-vs-copilot-2026
 claude-code-complete-guide-2026
