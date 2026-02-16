@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-claude-code-automation-workflow
 claude-code-vs-copilot-2026
 claude-code-complete-guide-2026
 claude-code-monitor-overlay
