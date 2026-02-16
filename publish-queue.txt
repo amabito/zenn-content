@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-claude-code-complete-guide-2026
 claude-code-monitor-overlay
 claude-agent-sdk-custom-tools
 pytorch-210-cuda-blackwell
