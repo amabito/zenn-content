@@ -3,7 +3,7 @@ title: "PyTorch 2.10リリース：CUDA 13対応とBlackwell世代の最適解"
 emoji: "🔥"
 type: "tech"
 topics: ["PyTorch", "CUDA", "RTX5090", "Blackwell", "GPU"]
-published: false
+published: true
 ---
 
 # 結論から言う
