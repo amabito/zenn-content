@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-cuda-128-blackwell-complete
 webgpu-2026-browser-support-performance
 webgpu-cross-browser-2026
 gsplat-3dgut-fisheye-camera
