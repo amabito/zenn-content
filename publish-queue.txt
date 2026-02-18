@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-webgpu-cross-browser-2026
 gsplat-3dgut-fisheye-camera
 torch-compile-3dgs-training
 hypersplat-training-evolution
