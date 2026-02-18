@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-torch-compile-3dgs-training
 hypersplat-training-evolution
 openai-prism-latex-writing-guide
 autonomous-driving-3dgs-sim

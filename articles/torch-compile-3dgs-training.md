@@ -3,7 +3,7 @@ title: "torch.compileで3DGS学習を高速化する実践テクニック"
 emoji: "🚀"
 type: "tech"
 topics: ["PyTorch", "torchcompile", "3DGS", "CUDA", "最適化"]
-published: false
+published: true
 ---
 
 # 結論から言う
