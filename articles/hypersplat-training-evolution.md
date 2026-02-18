@@ -3,7 +3,7 @@ title: "3DGS学習フレームワークを10回作り直した：HyperSplat開�
 emoji: "📓"
 type: "tech"
 topics: ["3DGS", "PyTorch", "機械学習", "CUDA", "開発記録"]
-published: false
+published: true
 ---
 
 # 結論から言う
