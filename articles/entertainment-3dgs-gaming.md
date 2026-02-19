@@ -3,7 +3,7 @@ title: "ゲーム背景3D化：制作コスト1/5にする3DGS活用法"
 emoji: "🎮"
 type: "tech"
 topics: ["3DGS", "ゲーム開発", "3DCG", "VR", "映画VFX"]
-published: false
+published: true
 ---
 
 # 結論から言う
