@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-openai-prism-latex-writing-guide
 autonomous-driving-3dgs-sim
 entertainment-3dgs-gaming
 insurance-3dgs-assessment
