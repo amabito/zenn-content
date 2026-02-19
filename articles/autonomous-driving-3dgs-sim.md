@@ -3,7 +3,7 @@ title: "自動運転3DGS：テスト走行コスト1/100のシミュレーショ
 emoji: "🚗"
 type: "tech"
 topics: ["3DGS", "自動運転", "シミュレーション", "AV", "センサーフュージョン"]
-published: false
+published: true
 ---
 
 # 結論から言う
