@@ -3,7 +3,7 @@ title: "物流倉庫3D化：棚卸し1/3・レイアウト検討1/5にする3DGS
 emoji: "📦"
 type: "tech"
 topics: ["3DGS", "物流", "倉庫管理", "DX", "デジタルツイン"]
-published: false
+published: true
 ---
 
 # 結論から言う
