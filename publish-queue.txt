@@ -1,5 +1,4 @@
 # Zenn publish queue - one slug per line, top = next
-cultural-heritage-3dgs-museum
 logistics-3dgs-warehouse
 education-3dgs-learning
 realestate-3dgs-paid
