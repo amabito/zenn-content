@@ -3,7 +3,7 @@ title: "教育3D教材制作：コスト1/10で実現する3DGS活用法"
 emoji: "🎓"
 type: "tech"
 topics: ["3DGS", "教育", "EdTech", "3D教材", "GIGAスクール"]
-published: false
+published: true
 ---
 
 # 結論から言う

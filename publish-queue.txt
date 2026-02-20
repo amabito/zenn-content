@@ -1,4 +1,3 @@
 # Zenn publish queue - one slug per line, top = next
-education-3dgs-learning
 realestate-3dgs-paid
 manufacturing-3dgs-paid
