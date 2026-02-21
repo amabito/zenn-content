@@ -3,7 +3,7 @@ title: "【有料】製造業×3DGS導入ロードマップ：PoCから本格運
 emoji: "🏭"
 type: "tech"
 topics: ["製造業", "3DGS", "DX", "スマートファクトリー", "品質管理"]
-published: false
+published: true
 price: 1480
 ---
 
