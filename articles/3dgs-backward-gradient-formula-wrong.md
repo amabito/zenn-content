@@ -3,7 +3,7 @@ title: "3DGS Backwardの勾配公式を間違えてPSNRが17→24dBになった�
 emoji: "📐"
 type: "tech"
 topics: ["CUDA", "3DGS", "機械学習", "数学", "深層学習"]
-published: true
+published: false
 published_at: "2026-03-01 12:00"
 ---
 

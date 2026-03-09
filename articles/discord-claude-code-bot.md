@@ -3,7 +3,7 @@ title: "スマホからClaude Codeを操作する：Discord Bot構築ガイド"
 emoji: "📱"
 type: "tech"
 topics: ["Discord", "ClaudeCode", "Python", "DiscordBot", "自動化"]
-published: true
+published: false
 ---
 
 # 結論から言う

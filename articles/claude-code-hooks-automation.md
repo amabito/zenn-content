@@ -3,7 +3,7 @@ title: "Claude Code Hook活用：AIの動作を自在にカスタマイズ"
 emoji: "🪝"
 type: "tech"
 topics: ["ClaudeCode", "自動化", "AI", "CLI", "開発効率"]
-published: true
+published: false
 ---
 
 # 結論から言う

@@ -3,7 +3,7 @@ title: "Claude Code状態監視：WPFオーバーレイで常時表示するツ�
 emoji: "🖥️"
 type: "tech"
 topics: ["ClaudeCode", "CSharp", "WPF", "dotnet", "開発ツール"]
-published: true
+published: false
 ---
 
 # 結論から言う

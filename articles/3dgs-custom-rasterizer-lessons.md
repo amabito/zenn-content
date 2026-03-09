@@ -3,7 +3,7 @@ title: "3DGSラスタライザを自作して学んだ設計判断と教訓"
 emoji: "🔥"
 type: "tech"
 topics: ["3DGS", "CUDA", "ラスタライザ", "GPU", "設計"]
-published: true
+published: false
 ---
 
 # 結論から言う

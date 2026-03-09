@@ -3,7 +3,7 @@ title: "Claude Code MCP入門：外部ツールを自在に操る"
 emoji: "🔌"
 type: "tech"
 topics: ["ClaudeCode", "MCP", "AI", "CLI", "自動化"]
-published: true
+published: false
 ---
 
 # 結論から言う

@@ -3,7 +3,7 @@ title: "Claude Agent SDKで自律開発エージェントを作る実践ガイ�
 emoji: "🤖"
 type: "tech"
 topics: ["Claude", "AgentSDK", "MCP", "Python", "自動化"]
-published: true
+published: false
 ---
 
 # 結論から言う

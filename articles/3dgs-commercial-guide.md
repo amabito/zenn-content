@@ -3,7 +3,7 @@ title: "3DGSは商用利用できない？ライセンス問題と3つの解決�
 emoji: "💼"
 type: "tech"
 topics: ["3DGS", "ライセンス", "OSS", "商用利用"]
-published: true
+published: false
 ---
 
 # 結論から言う

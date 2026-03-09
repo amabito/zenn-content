@@ -3,7 +3,7 @@ title: "block_reduce.hに潜んでいた2D blockのバグ: threadIdx.x / 32が�
 emoji: "🐛"
 type: "tech"
 topics: ["cuda", "gpu", "cpp", "debugging", "3dgs"]
-published: true
+published: false
 published_at: "2026-02-25 18:00"
 ---
 

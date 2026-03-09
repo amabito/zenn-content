@@ -3,7 +3,7 @@ title: "3DGS商用化が99%失敗する理由：ライセンス問題の全真�
 emoji: "⚖️"
 type: "tech"
 topics: ["3DGS", "ライセンス", "法務", "商用利用", "OSS"]
-published: true
+published: false
 ---
 
 # 結論から言う

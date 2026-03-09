@@ -3,7 +3,7 @@ title: "LLMエージェントの予算暴走を止める: veronica-coreの設計
 emoji: "🛡"
 type: "tech"
 topics: ["llm", "ai", "python", "agentai", "claude"]
-published: true
+published: false
 published_at: "2026-02-25 07:00"
 ---
 

@@ -3,7 +3,7 @@ title: "3DGS Forward/BackwardのIndex semantics不一致で勾配が4887倍ロ�
 emoji: "💀"
 type: "tech"
 topics: ["CUDA", "3DGS", "機械学習", "デバッグ", "GPU"]
-published: true
+published: false
 published_at: "2026-02-27 21:00"
 ---
 

@@ -3,7 +3,7 @@ title: "WebGPU対応3DGSビューア「HyperViewer」を公開した"
 emoji: "🌐"
 type: "tech"
 topics: ["WebGPU", "3DGS", "TypeScript", "ビューア", "OSS"]
-published: true
+published: false
 ---
 
 # 結論から言う

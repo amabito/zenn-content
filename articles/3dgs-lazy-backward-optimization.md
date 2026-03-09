@@ -3,7 +3,7 @@ title: "3DGS学習で130倍高速化：Lazy Backward最適化の全技術"
 emoji: "⚡"
 type: "tech"
 topics: ["3DGS", "CUDA", "機械学習", "最適化", "深層学習"]
-published: true
+published: false
 ---
 
 # 結論から言う

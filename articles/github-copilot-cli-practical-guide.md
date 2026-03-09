@@ -3,7 +3,7 @@ title: "GitHub Copilot CLI完全ガイド：AIコマンド補完で開発速度3
 emoji: "🤖"
 type: "tech"
 topics: ["githubcopilot", "cli", "ai", "devtools", "効率化"]
-published: true
+published: false
 ---
 
 # 結論から言う

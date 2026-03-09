@@ -3,7 +3,7 @@ title: "本番CUDAカーネルにデバッグatomicAddを残したら18倍遅く
 emoji: "💣"
 type: "tech"
 topics: ["cuda", "gpu", "performance", "debugging", "3dgs"]
-published: true
+published: false
 published_at: "2026-02-26 12:00"
 ---
 

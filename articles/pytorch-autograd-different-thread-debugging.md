@@ -3,7 +3,7 @@ title: "thread_local + PyTorch autograd = double free: 非再現バグの完全�
 emoji: "🔍"
 type: "tech"
 topics: ["CUDA", "PyTorch", "デバッグ", "GPU", "C++"]
-published: true
+published: false
 published_at: "2026-02-27 18:00"
 ---
 

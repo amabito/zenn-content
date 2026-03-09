@@ -3,7 +3,7 @@ title: "claude-mem-lite: Claudeのセッション間メモリをSQLite+FTS5で�
 emoji: "🧠"
 type: "tech"
 topics: ["ClaudeCode", "sqlite", "python", "ai", "開発効率"]
-published: true
+published: false
 published_at: "2026-03-01 18:00"
 ---
 

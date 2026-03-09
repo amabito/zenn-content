@@ -3,7 +3,7 @@ title: "Claude Code月$800超え問題：Opus・Sonnet・Codexの最適な使い
 emoji: "💰"
 type: "tech"
 topics: ["ClaudeCode", "AI", "コスト最適化", "開発効率"]
-published: true
+published: false
 ---
 
 ## はじめに：月$800の衝撃

@@ -3,7 +3,7 @@ title: "CUDA warp同期で半日溶かした話：__shfl_xor_syncの罠"
 emoji: "🪤"
 type: "tech"
 topics: ["CUDA", "GPU", "デバッグ", "並列処理", "NVIDIA"]
-published: true
+published: false
 ---
 
 # 結論から言う

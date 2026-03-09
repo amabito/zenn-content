@@ -3,7 +3,7 @@ title: "Git Worktreeで並列AI開発：Claude Codeを3-5セッション同時�
 emoji: "🌳"
 type: "tech"
 topics: ["Git", "ClaudeCode", "開発効率", "AI開発"]
-published: true
+published: false
 ---
 
 ## はじめに

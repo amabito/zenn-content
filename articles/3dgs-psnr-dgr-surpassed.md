@@ -3,7 +3,7 @@ title: "DGRを超えるまで: 3DGS PSNRを28.66→29.07dBに改善した全記�
 emoji: "📈"
 type: "tech"
 topics: ["3DGS", "CUDA", "機械学習", "最適化", "深層学習"]
-published: true
+published: false
 published_at: "2026-02-27 12:00"
 ---
 

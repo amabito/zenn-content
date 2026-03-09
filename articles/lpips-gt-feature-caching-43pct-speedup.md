@@ -3,7 +3,7 @@ title: "LPIPS GT Feature Cachingで3DGS学習を43%高速化した話"
 emoji: "⚡"
 type: "tech"
 topics: ["CUDA", "PyTorch", "3DGS", "機械学習", "最適化"]
-published: true
+published: false
 published_at: "2026-02-27 07:00"
 ---
 

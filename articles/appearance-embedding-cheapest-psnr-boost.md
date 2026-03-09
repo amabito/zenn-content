@@ -3,7 +3,7 @@ title: "Appearance Embedding：60行のコードで3DGSのPSNRを1-2 dB改善す
 emoji: "🎨"
 type: "tech"
 topics: ["3DGS", "GaussianSplatting", "品質改善", "機械学習"]
-published: true
+published: false
 ---
 
 ## はじめに

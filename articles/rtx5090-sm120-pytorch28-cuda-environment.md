@@ -3,7 +3,7 @@ title: "RTX 5090 (sm_120) でPyTorch 2.8.0を選んだ理由: CUDA 12.8環境構
 emoji: "⚡"
 type: "tech"
 topics: ["cuda", "pytorch", "rtx5090", "windows", "3dgs"]
-published: true
+published: false
 published_at: "2026-03-02 12:00"
 ---
 

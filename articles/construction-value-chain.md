@@ -3,7 +3,7 @@ title: "建設業で誰が一番儲けてる？金の流れを暴露【業界15�
 emoji: "💸"
 type: "tech"
 topics: ["建設業", "ビジネスモデル", "経営", "公共事業", "ゼネコン"]
-published: true
+published: false
 ---
 
 # 結論から言う

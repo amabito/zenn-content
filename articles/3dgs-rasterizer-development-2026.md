@@ -3,7 +3,7 @@ title: "3DGSラスタライザ自作30の設計判断：130倍高速化の全記
 emoji: "🛠️"
 type: "tech"
 topics: ["3DGS", "CUDA", "GPU", "ラスタライザ", "最適化"]
-published: true
+published: false
 ---
 
 # 結論から言う

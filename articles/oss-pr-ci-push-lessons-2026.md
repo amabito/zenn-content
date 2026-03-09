@@ -3,7 +3,7 @@ title: "OSSにPRを出したら1 pushで30本のCIジョブが全滅した話"
 emoji: "🔥"
 type: "tech"
 topics: ["oss", "github", "ci", "typescript", "continuede"]
-published: true
+published: false
 published_at: "2026-02-26 21:00"
 ---
 
